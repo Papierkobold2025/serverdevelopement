@@ -1,4 +1,4 @@
-# serverdevelopment
+# Serverdevelopment
 Amateur Server Development Project
 # Nextcloud integration
 Integración de Nextcloud dentro de un entorno de cinco nodos dentro de una arquitectura de Proxmox.
