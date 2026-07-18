@@ -7,7 +7,7 @@ Meta de esta integración es crear un entorno personal, desconectado para guarda
 - Intel NUC
   - 64GB de RAM
   - 1.5TB de almacenamiento
-##  Meta a alcanazar a primer plazo:
+##  Meta a alcanzar a primer instancia:
 - Configuración de entorno con virtualización mediante Proxmox
 - Envío de correos por medio de SMTP para reseteo de contraseñas, bienvenida etc.
 - Fail2Ban con conexión por API con Telegram para alertar de IPs bloqueadas.
