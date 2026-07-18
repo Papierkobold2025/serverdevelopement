@@ -34,6 +34,7 @@ nextcloud/all-in-one:latest
 ```
 # Envío de correos por SMTP
 - Configuración de SMTP
+
 | Campo | Valor |
 |---|---|
 | Protocolo | SMTP |
