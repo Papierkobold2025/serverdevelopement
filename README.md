@@ -248,13 +248,13 @@ Cobertura aproximada: último mes completo, sin acumulación indefinida.
 
 Exporter, Grafana y Prometheus corren dentro de una VM dedicada en un Docker, separada de la integración de Nextcloud para no comprometer la seguridad del nodo.
 
-## Preparación para exponer datos a Graphana
+## Preparación para exponer datos a Grafana
 
 - Configurar Proxmox exporter para exponer todos los datos de los nodos de Proxmox.
 
 - Configurar Prometheus para juntar todos los datos de manera centralizada.
 
-- Configurar Graphana para exponer los datos de manera ordenada en un panel de visualización.
+- Configurar Grafana para exponer los datos de manera ordenada en un panel de visualización.
 
 ## Configuración del exporter (`prometheus-pve-exporter`)
 
@@ -316,6 +316,27 @@ sudo docker run \
 -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
 prom/prometheus
 ```
+
+## Configuración de Grafana
+
+``` bash
+
+sudo docker run \
+--name grafana \
+--restart always \
+-d \
+-p 192.168.1.127:3000:3000 \
+grafana/grafana
+
+```
+
+- Confirmación de arranque
+
+    - sudo docker ps | grep grafana
+
+- Conexión de base de datos de Prometheus con Grafana por medio de la dirección IP:9090 de Prometheus
+
+- Importación de template de pantatlla de Grafana con la ID: 10347
 
 ## Dificultades encontradas
 
