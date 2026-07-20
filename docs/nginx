@@ -1,0 +1,61 @@
+# Configuración de Nginx
+
+Nuevo dominio para poder publicar servicios a red externa enrutando por Nginx por reverse Proxy.
+
+Dominio comprado: moralesdario.com
+
+## Instalación de Docker de nginx: 
+
+``` bash
+sudo docker run --name mynginx1 -p 80:80 -d nginx
+```
+
+Configuración de documento /opt/npm/docker-compose.yml:
+
+``` bash
+services:
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: npm
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '81:81'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+
+```
+
+# Dominio configurado con reverse proxy
+
+Configuración de subdominio nextcloud.moralesdario.com para utilización de Nextcloud
+
+## Configuración de puertos y red
+
+- Configuración de puerto para Apache en Nextcloud a puerto 11000 para poder usar los puertos 80 y 443 dirigidos a nginx
+
+- Apertura de puertos a nivel de router, 80 && 443 dirigidos a la IP de nginx y 11000 a Nextcloud
+
+# Dificultades encontradas
+
+- Contenedor de Apache no actualizaba puerto por guardado en Cache por parte del Master Container
+
+   - Solución encontrada:
+
+   - Desinstalación de contenedor apache y reinstalación con puerto especificado
+
+- Certificado SSL no prendido a nivel de Nginx, respuesta: Página rechazó la conexión
+
+   - Solución encontrada:
+
+   - Instalación de certificado SSL forzando SSL
+
+- Conflicto de puerto 80 entre `mynginx1` (prueba inicial) y `npm` (Nginx Proxy Manager)
+    
+    - Solución encontrada:
+
+    - `docker stop mynginx1` antes de levantar `npm` vía docker-compose
+
+    - Contenedor de prueba quedó detenido (Exited) en el host, pendiente limpieza con `docker rm`
