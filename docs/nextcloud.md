@@ -28,6 +28,14 @@ Meta de esta integración es crear un entorno personal, desconectado para guarda
 
 - Dificultadess encontradas en el dessarrollo inicial.
 
+### Actualizaciones tras configuración de nginx
+
+- Configuración de subdominio para poder abrir nextcloud
+
+- Configuración de puerto 11000 para comunicación con contenedor de Apache
+
+- Cerrar puertos 80 y 443 en Nextcloud y redigiriéndolos a nginx
+
 # Configuración de entorno
 
 - Proxmox instalado en NUC con almacenamiento ZFS.
@@ -90,9 +98,8 @@ enabled = true
 maxretry = 4
 findtime = 600
 bantime = 3600
-port = http,https
 filter = nextcloud
-action = iptables-multiport[name=nextcloud, port="http,https", protocol=tcp]
+action = sshban
          telegram
 backend = auto
 logpath = /var/lib/docker/volumes/nextcloud_aio_nextcloud/_data/data/nextcloud.log
@@ -105,6 +112,16 @@ logpath = /var/lib/docker/volumes/nextcloud_aio_nextcloud/_data/data/nextcloud.l
 ``` bash
 [Definition]
 actionban = /usr/local/bin/telegram-alert.sh "Nextcloud Alerta: IP <ip> bloqueada por intentos fallidos."
+```
+
+## Configuración de envío de IP de Nextcloud a Nginx
+
+- Ruta de configuración: /etc/fail2ban/action.d/sshban.conf
+
+``` bash
+[Definition]
+actionban = /usr/local/bin/nginx-ban.sh "<ip>"
+actionunban = /usr/local/bin/nginx-unban.sh "<ip>"
 ```
 
 ## Configuración de API para mandar mensaje de alerta a Telegram
@@ -123,6 +140,38 @@ curl -s -X POST https://api.telegram.org/bot$TOKEN/sendMessage -d chat_id=$CHAT_
 - **Importante**
 
 - El Bot de Telegram a primeras no funcionó y ningún menssaje fue recibido, al mandar un mensaje manualmente e iniciar conversación el envío automático funcionó.
+
+## Configuración de baneo de IP después de 4 intentos
+
+- Ruta de configuración: /usr/local/bin/nginx-ban.sh
+
+ ``` bash
+#!/bin/bash
+ssh="ssh -i /root/.ssh/nginx_ban_key -p 2226 nginx@192.168.1.133"
+ban="sudo ipset add blocklist $1"
+$ssh "$ban"
+```
+
+## Configuración de desbaneo de IP
+
+- Ruta de configuración: /usr/local/bin/nginx-unban.sh
+
+ ``` bash
+#!/bin/bash
+ssh="ssh -i /root/.ssh/nginx_unban_key -p 2226 nginx@192.168.1.133"
+ban="sudo ipset add blocklist $1"
+$ssh "$ban"
+```
+
+- Configuración de usuario para que solo tuviera derecho a ejecutar un comando con sudo
+
+- Configuración de clave para conexión ssh para envío automatizado
+
+- Configuración crontab para hacer la configuración persistente
+
+``` bash
+0 3 * * * /usr/sbin/netfilter-persistent save
+```
 
 ### Validación para probar funcionalidad
 
@@ -197,9 +246,9 @@ Cobertura aproximada: último mes completo, sin acumulación indefinida.
 
 # Configuración de puertos
 
-- Puerto 80 protocolo TCP abierto para acceso por medio de http a Nextcloud
+- Puerto 80 protocolo TCP abierto para acceso por medio de http a nginx
 
-- Puerto 443 protocolo TCP abierto para conexión https a Nextcloud
+- Puerto 443 protocolo TCP abierto para conexión https a nginx
 
 - Puerto 3478 protocolo TCP/UDP abierto para poder permitir Nextcloud Talk módulo de llamadas tipo Teams
 
