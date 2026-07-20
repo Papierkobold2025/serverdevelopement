@@ -6,13 +6,13 @@ Dominio comprado: moralesdario.com
 
 ## Instalación de Docker de nginx: 
 
-``` bash
+```bash
 sudo docker run --name mynginx1 -p 80:80 -d nginx
 ```
 
 Configuración de documento /opt/npm/docker-compose.yml:
 
-``` bash
+```bash
 services:
   npm:
     image: 'jc21/nginx-proxy-manager:latest'
