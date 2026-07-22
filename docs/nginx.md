@@ -32,6 +32,8 @@ services:
 
 Configuración de subdominio nextcloud.moralesdario.com para utilización de Nextcloud
 
+Configuración de más subdominios pero manteniéndolos dentro de red local para no exponerlos a red externa
+
 ## Configuración de puertos y red
 
 - Configuración de puerto para Apache en Nextcloud a puerto 11000 para poder usar los puertos 80 y 443 dirigidos a nginx
