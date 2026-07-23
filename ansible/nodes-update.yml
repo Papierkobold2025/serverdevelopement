@@ -1,0 +1,16 @@
+- name: Actualizar paquetes en los nodos y limpiar dependencias deprecadas
+  hosts: hipervisores
+  become: true
+  tasks:
+    - name: Actualizar el índice de paquetes
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Actualizar todos los paquetes instalados
+      ansible.builtin.apt:
+        upgrade: dist
+    
+    - name: Borrar todas las dependencias deprecadas
+      ansible.builtin.apt:
+        autoremove: yes
+        purge: true
