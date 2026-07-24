@@ -14,3 +14,12 @@
       ansible.builtin.apt:
         autoremove: yes
         purge: true
+    
+    - name: Verificar si se requiere reinicio
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: reboot_required
+
+    - name: Reiniciar hipervisor solo si es necesario
+      ansible.builtin.reboot:
+      when: reboot_required.stat.exists
