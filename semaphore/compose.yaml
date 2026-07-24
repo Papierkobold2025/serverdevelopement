@@ -1,0 +1,18 @@
+services:
+  semaphore:
+    ports:
+      - 192.168.1.131:3000:3000
+    image: semaphoreui/semaphore:v2.15.0
+    environment:
+      SEMAPHORE_DB_DIALECT: '${DB_DIALECT}'
+      SEMAPHORE_ADMIN_PASSWORD: '${PASSWORD}'
+      SEMAPHORE_ADMIN_NAME: '${ADMIN}'
+      SEMAPHORE_ADMIN_EMAIL: '${EMAIL}'
+      SEMAPHORE_ADMIN: '${ADMIN}'
+      SEMAPHORE_SCHEDULE_TIMEZONE: '${TZ}'
+      TZ: '${TZ}'
+      SEMAPHORE_ACCESS_KEY_ENCRIPTION: '${ENCRIPTION}'
+    volumes:
+      - semaphore-data:/var/lib/semaphore
+volumes:
+  semaphore-data:
