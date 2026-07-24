@@ -1,0 +1,25 @@
+- name: Actualizar paquetes en las VMs y limpiar dependencias deprecadas
+  hosts: vms
+  become: true
+  tasks:
+    - name: Actualizar el indice de paquetes
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Actualizar todos los paquetes instalados
+      ansible.builtin.apt:
+        upgrade: dist
+
+    - name: Borrar todas las dependencias deprecadas
+      ansible.builtin.apt:
+        autoremove: yes
+        purge: true
+
+    - name: Verificar si se requiere reinicio
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: reboot_required
+
+    - name: Reiniciar hipervisor solo si es necesario
+      ansible.builtin.reboot:
+      when: reboot_required.stat.exists
