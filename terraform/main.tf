@@ -93,7 +93,7 @@ terraform {
   }
 }
 
-variable "TF_VAR_proxmox_api_token" {
+variable "proxmox_api_token" {
   type      = string
   sensitive = true
 }
