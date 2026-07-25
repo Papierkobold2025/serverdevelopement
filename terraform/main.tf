@@ -91,29 +91,15 @@ terraform {
       version = "~> 0.66"
     }
   }
-}
 
-variable "proxmox_api_token" {
-  type      = string
-  sensitive = true
+  backend "local" {
+    path = "/var/lib/semaphore/terraform-state/landingpage.tfstate"
+  }
 }
 
 variable "ssh_key" {
   type      = string
   sensitive = true
-}
-
-terraform {
-  required_providers {
-    proxmox = {
-      source  = "bpg/proxmox"
-      version = "~> 0.66"
-    }
-  }
-
-  backend "local" {
-    path = "/var/lib/semaphore/terraform-state/landingpage.tfstate"
-  }
 }
 
 provider "proxmox" {
