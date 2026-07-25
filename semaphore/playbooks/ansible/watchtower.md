@@ -1,0 +1,56 @@
+- name: Instalar Docker y preparar carpeta de servicio
+  hosts: nuevo_nodo          # el grupo/host del inventario donde vas a instalar Docker
+  become: true                # equivalente a poner "sudo" delante de cada tarea
+
+  vars:
+    servicio: "netbird"       # cambias esto por cada servicio nuevo
+
+  tasks:
+    - name: Actualizar índice de paquetes
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Instalar dependencias base
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+
+    - name: Crear carpeta para las llaves de apt
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Descargar la llave GPG de Docker
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+
+    - name: Agregar el repositorio de Docker
+      ansible.builtin.apt_repository:
+        repo: "deb [arch={{ ansible_architecture }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+        filename: docker
+
+    - name: Actualizar índice otra vez (ya con el repo de Docker)
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Instalar Docker y sus plugins
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+    - name: Crear carpeta del servicio en /srv
+      ansible.builtin.file:
+        path: "/srv/{{ servicio }}"
+        state: directory
+        mode: '0755'
