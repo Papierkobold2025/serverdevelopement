@@ -24,7 +24,7 @@ resource "proxmox_virtual_environment_container" "ubuntu_container" {
       keys = [
         trimspace(tls_private_key.ubuntu_container_key.public_key_openssh)
       ]
-      password = random_password.ubuntu_container_password.result
+      password = var.vaultwarden_password
     }
   }
 
@@ -59,19 +59,13 @@ resource "proxmox_virtual_environment_container" "ubuntu_container" {
   }
 }
 
-resource "random_password" "ubuntu_container_password" {
-  length           = 16
-  override_special = "_%@"
-  special          = true
-}
-
 resource "tls_private_key" "ubuntu_container_key" {
   algorithm = "RSA"
   rsa_bits  = 2048
 }
 
 output "ubuntu_container_password" {
-  value     = random_password.ubuntu_container_password.result
+  value     = var.vaultwarden_password
   sensitive = true
 }
 
@@ -98,6 +92,11 @@ terraform {
 }
 
 variable "ssh_key" {
+  type      = string
+  sensitive = true
+}
+
+variable "vaultwarden_password" {
   type      = string
   sensitive = true
 }
