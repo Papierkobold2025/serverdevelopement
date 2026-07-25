@@ -47,17 +47,23 @@ Meta de esta integración es crear un entorno personal, desconectado para guarda
 - Instalación de Docker Container nextcloud_aio_nextcloud
 
 ``` bash
-sudo docker run \
---sig-proxy=false \
---name nextcloud-aio-mastercontainer \
---restart always \
---publish 8080:8080 \
---env APACHE_PORT=11000 \
---env APACHE_IP_BINDING=0.0.0.0 \
---env NEXTCLOUD_DATADIR=/mnt/nextcloud_data \
---volume nextcloud_aio_mastercontainer:/mnt/docker-aio-config \
---volume /var/run/docker.sock:/var/run/docker.sock:ro \
-nextcloud/all-in-one:latest
+services:
+  nextcloud_aio_mastercontainer:
+    container_name: nextcloud-aio-mastercontainer
+    image: nextcloud/all-in-one:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      APACHE_PORT: 11000
+      APACHE_IP_BINDING: 0.0.0.0
+    volumes:
+      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  nextcloud_aio_mastercontainer:
+    external: true
 ```
 
 # Envío de correos por SMTP

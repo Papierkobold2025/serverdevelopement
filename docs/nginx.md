@@ -10,7 +10,7 @@ Dominio comprado: midominio.com
 sudo docker run --name mynginx1 -p 80:80 -d nginx
 ```
 
-Configuración de documento /opt/npm/docker-compose.yml:
+Configuración de documento /srv/nginx/compose.yml:
 
 ```bash
 services:
