@@ -103,6 +103,19 @@ variable "ssh_key" {
   sensitive = true
 }
 
+terraform {
+  required_providers {
+    proxmox = {
+      source  = "bpg/proxmox"
+      version = "~> 0.66"
+    }
+  }
+
+  backend "local" {
+    path = "/var/lib/semaphore/terraform-state/landingpage.tfstate"
+  }
+}
+
 provider "proxmox" {
   endpoint  = "https://192.168.1.123:8006/"
   api_token = var.proxmox_api_token
