@@ -102,6 +102,11 @@ variable "ssh_key" {
   sensitive = true
 }
 
+variable "proxmox_api_token" {
+  type      = string
+  sensitive = true
+}
+
 provider "proxmox" {
   endpoint  = "https://192.168.1.123:8006/"
   api_token = var.proxmox_api_token
