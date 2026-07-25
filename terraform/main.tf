@@ -98,6 +98,11 @@ variable "proxmox_api_token" {
   sensitive = true
 }
 
+variable "ssh_key" {
+  type      = string
+  sensitive = true
+}
+
 provider "proxmox" {
   endpoint  = "https://192.168.1.123:8006/"
   api_token = var.proxmox_api_token
@@ -106,6 +111,6 @@ provider "proxmox" {
   ssh {
     agent       = false
     username    = "root"
-    private_key = file("~/.ssh/id_ed25519_ansible")
+    private_key = var.ssh_key
   }
 }
