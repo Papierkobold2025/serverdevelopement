@@ -33,7 +33,6 @@ Specs de hardware de cada nodo físico, sin direcciones IP (documentación inter
 - **Kernel**: 7.0.2-6-pve
 - **Manager**: pve-manager/9.2.2
 - **Boot Mode**: EFI
-- **Nota**: nodo más nuevo del clúster (CPU de generación más reciente, 16 hilos vs 4 de los demás) — es el nodo elegido para alojar la VM de k3s por ser el menos probable de fallar.
 
 ## pbs-homelab
 - **CPU(s)**: 8 x Intel Core i7-8559U @ 2.70GHz (1 Socket)
@@ -55,7 +54,7 @@ Specs de hardware de cada nodo físico, sin direcciones IP (documentación inter
 
 ---
 
-# VMs del clúster
+# VMs del cluster
 
 Specs asignadas a cada VM (vCPU, RAM, disco), sin IPs.
 
@@ -65,17 +64,16 @@ Specs asignadas a cada VM (vCPU, RAM, disco), sin IPs.
 | 103 | Prometheus-Panel | api-panel | 3 (1 socket) | 9.77 GiB | 500G | |
 | 104 | Wireguard | panel | 3 (1 socket) | 9.77 GiB | 400G | |
 | 105 | Nginx | panel | 2 (1 socket) | 9.77 GiB | 400G | |
-| 106 | Kubernetes | panel | 2 (1 socket) | 7.81 GiB | 40G | |
 | 107 | pihole | api-panel | 2 (1 socket) | 5.86 GiB | 100G | |
+| 102 | nextcloud | nextcloud-prim | 2 (1 socket) | 7.81 GiB | 1.62 TB | |
+| 101 | landingpage | api-panel | 2 (1 socket) | 9.77 GiB | 32 GiB | Pendiente de eliminar, reemplazada por CT 109 |
 
-## Notas sobre las VMs
+# Contenedores del cluster
 
-- Todas comparten controlador SCSI VirtIO single, máquina i440fx (default), y arquitectura x86-64-v2-AES.
-- La mayoría instaladas desde `ubuntu-24.04.4-live-server-amd64.iso`.
-- **Minecraft** es la única con BIOS OVMF (UEFI) en vez de SeaBIOS — también la que más RAM y núcleos tiene asignados de todo el clúster.
-- El nodo `panel` concentra la mayoría de las VMs de servicios "nuevos" (Minecraft, WireGuard, Nginx, Kubernetes) — consistente con ser el nodo más nuevo/potente, elegido para alojar servicios en crecimiento.
-- `api-panel` aloja Prometheus/Grafana y Pi-hole — los dos servicios de infraestructura crítica (monitoreo y DNS/DHCP).
+Specs asignadas a cada VM (vCPU, RAM, disco), sin IPs.
 
-## Nota sobre nomenclatura
+| VM ID | Nombre | Nodo f  sico | vCPU | RAM | Disco | Notas |
+|---|---|---|---|---|---|---|
+| 106 | ansible | api-panel | 1 (1 socket) | 1.46 GiB | 8 GiB | |
+| 109 | landingpage | api-panel | 1 (1 socket) | 512 MiB | 4 GiB | Creado con Terraform, reemplaza a VM 101 |
 
-Los nombres de nodo (`nextcloud`, `nextcloud-prim`, `api-panel`, `panel`) no necesariamente corresponden 1:1 con los servicios que alojan — son nombres asignados al crear cada nodo en Proxmox, distintos de los hostnames de las VMs individuales que corren dentro de cada uno (ver `docs/pihole`, `docs/monitoring`, etc. para el detalle de qué VM vive en qué nodo).

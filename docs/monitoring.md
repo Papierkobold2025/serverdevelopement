@@ -12,7 +12,7 @@ Exporter, Grafana y Prometheus corren dentro de una VM dedicada en un Docker, se
 
 ## Configuración de exporter para Proxmox (`prometheus-pve-exporter`)
 
-- Ruta de configuración: `/etc/prometheus/pve.yml`
+- Ruta de configuración: `/srv/prometheus-exporter/pve.yml`
 
 ``` yaml
 default:
@@ -21,15 +21,18 @@ default:
     verify_ssl: false
 ```
 
+- Ruta de configuración: `/srv/prometheus-exporter/compose.yml`
+
 ``` bash
-sudo docker run \
---init \
---name prometheus-pve-exporter \
---restart always \
--d \
--p 192.168.1.127:9221:9221 \
--v /etc/prometheus/pve.yml:/etc/prometheus/pve.yml \
-prompve/prometheus-pve-exporter
+services:
+  prometheus-pve-exporter:
+    container_name: prometheus-pve-exporter
+    image: prompve/prometheus-pve-exporter
+    restart: always
+    ports:
+      - "192.168.1.127:9221:9221"
+    volumes:
+      - /srv/prometheus-exporter/pve.yml:/etc/prometheus/pve.yml
 ```
 
 ## Configuración de exporter para pihole (`pihole6_exporter`)
@@ -51,7 +54,7 @@ Description=Pihole 6 Prometheus Exporter
 After=pihole-FTL.service
 
 [Service]
-ExecStart=/usr/local/bin/pihole6_exporter -H localhost -k TU_CONTRASEÑA_REAL
+ExecStart=/usr/local/bin/pihole6_exporter -H localhost -k constraseña
 Type=exec
 Restart=always
 
@@ -95,30 +98,24 @@ scrape_configs:
         - 192.168.1.138:9666
 ```
 
+- Ruta de configuración: `/srv/prometheus/compose.yml`
+
 ``` bash
-sudo docker run \
---name prometheus \
---restart always \
--d \
--p 192.168.1.127:9090:9090 \
--v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
-prom/prometheus
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    restart: always
+    command:
+      - '--config.file=/srv/prometheus/prometheus.yml'
+    ports:
+      - "192.168.1.127:9090:9090"
+    volumes:
+      - /srv/prometheus/prometheus.yml:/srv/prometheus/prometheus.yml
+      - /srv/prometheus/alert_rules.yml:/srv/prometheus/alert_rules.yml
 ```
 
 ## Configuración de Grafana
-
-``` bash
-
-sudo docker run \
---name grafana \
---restart always \
--d \
--p 192.168.1.127:3000:3000 \
-grafana/grafana
-
-```
-
-- Migración de Grafana a Docker Compose para mejor documentación
 
 - Ruta de configuración: `/srv/grafana/compose.yaml`
 
