@@ -61,3 +61,31 @@ La meta es poder actualizar, instalar y crear entornos de una manera mas documen
   - Terraform por defecto guarda su state dentro del directorio /tmp/ del contenedor, por lo que no persiste sesiones
 
     - Solucion encontrada: Referenciar directorio explicito en main.tf para guardar el state de forma persistente
+
+#### Runbook
+
+- Backup Job de PBS ("Todas las VMs") en realidad cubre VMs y CTs — 
+  el nombre es histórico, no una limitación real. semaphore-data 
+  queda respaldado.
+
+``` bash
+services:
+  semaphore:
+    ports:
+      - 192.168.X.X:3000:3000
+    image: semaphoreui/semaphore:v2.15.0
+    environment:
+      SEMAPHORE_DB_DIALECT: '${DB_DIALECT}'
+      SEMAPHORE_ADMIN_PASSWORD: '${PASSWORD}'
+      SEMAPHORE_ADMIN_NAME: '${ADMIN}'
+      SEMAPHORE_ADMIN_EMAIL: '${EMAIL}'
+      SEMAPHORE_ADMIN: '${ADMIN}'
+      SEMAPHORE_SCHEDULE_TIMEZONE: '${TZ}'
+      TZ: '${TZ}'
+      SEMAPHORE_ACCESS_KEY_ENCRIPTION: '${ENCRIPTION}'
+    volumes:
+      - semaphore-data:/var/lib/semaphore
+volumes:
+  semaphore-data:
+
+```
