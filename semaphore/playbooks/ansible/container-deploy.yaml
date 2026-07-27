@@ -3,7 +3,7 @@
   become: true                # equivalente a poner "sudo" delante de cada tarea
 
   vars:
-    servicio: "keycloak"       # cambias esto por cada servicio nuevo
+    servicio: "portainer"       # cambias esto por cada servicio nuevo
 
   tasks:
     - name: Actualizar índice de paquetes
