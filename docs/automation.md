@@ -40,6 +40,10 @@ La meta es poder actualizar, instalar y crear entornos de una manera mas documen
 
 ### Dificultades encontradas
 
+- Docker Compose nombra volúmenes según el nombre de carpeta (project name) — renombrar la carpeta (ej. semaphore → semaphore-viejo) crea un volumen NUEVO vacío en vez de reutilizar el existente. Para forzar el volumen correcto sin importar el nombre de carpeta: docker compose -p semaphore up -d
+
+- Typo en SEMAPHORE_ACCESS_KEY_ENCRYPTION (o falta total de esta variable) no truena el contenedor — genera una clave nueva silenciosamente en cada arranque, dejando ilegibles los secretos cifrados con la clave anterior (SSH keys, Variable Groups). Los Task Templates/Inventarios no van cifrados, así que siguen siendo visibles aunque los secretos ya no se puedan descifrar.
+
 - Al haber varias partes que tienen que ir en conjunto la configuracion se dificulto un poco
 
   - Por otra parte tiene que haber conexion ssh con todas las maquinas que tienen que ser automatizadas
