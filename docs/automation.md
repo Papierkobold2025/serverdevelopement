@@ -30,6 +30,14 @@ La meta es poder actualizar, instalar y crear entornos de una manera mas documen
 
 - Configuracion para crear contenedores en vez de VMs
 
+## Comandos útiles
+
+- Al conectarse al contenedor en el que corre Semaphore, lo que Terraform genera no es accesible desde la consola misma de Semaphorm. Para entrar al entorno de terraform mismo: ```bash docker exec -it semaphore-semaphore-1 bash ```
+
+- Una vez dentro del contenedor de Terraform cada playbook nuevo de Terraform genera un nuevo template, en este caso ni project ni repository cambian de mundo mientras el peoyecto no cambie, pero el template siempre cambia ```bash cd /tmp/semaphore/project_3/repository_1_template_6/terraform/landingpage ```
+
+- Dentro del proyecto correcto despues se puede sacar el output de terraform para ese state con: ```bash terraform output -json``` o cualquier variable dentro de terraform. 
+
 ### Dificultades encontradas
 
 - Al haber varias partes que tienen que ir en conjunto la configuracion se dificulto un poco
