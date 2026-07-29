@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-exporter
+  template:
+    metadata:
+      labels:
+        app: prometheus-exporter
+    spec:
+      containers:
+        - name: prometheus-exporter
+          ports:
+            - containerPort: 9221
+          image: prompve/prometheus-pve-exporter:latest
+          volumeMounts:
+            - name: prometheus-exporter
+              mountPath: /etc/prometheus/pve.yml
+              subPath: pve.yml
+      volumes: 
+        - name: prometheus-exporter
+          secret:
+            secretName: prometheus-api
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: prometheus-api
+stringData:
+  pve.yml: |
+    default:
+      user: prometheus-auditor@pve
+      password: passwd
+      verify_ssl: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-exporter
+spec:
+  selector:
+    app: prometheus-exporter
+  ports:
+    - port: 9221
+      targetPort: 9221
+  type: NodePort

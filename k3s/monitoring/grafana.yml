@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SMTP_ENABLED
+              value: 'true'
+            - name: GF_SMTP_HOST
+              value: 'smtp.gmail.com:587'
+            - name: GF_SMTP_USER
+              value: 'user@mail.com'
+            - name: GF_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gmail
+                  key: gmail_api
+            - name: GF_SMTP_FROM_ADDRESS
+              value: 'user@mail.com'
+          volumeMounts:
+            - name: grafana-volume
+              mountPath: /var/lib/grafana
+      volumes:
+        - name: grafana-volume
+          hostPath:
+            path: /srv/grafana/data
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gmail
+type: Opaque
+stringData:
+  gmail_api: 'secret_token'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  selector:
+    app: grafana
+  ports:
+    - port: 3002
+      targetPort: 3000
+  type: NodePort

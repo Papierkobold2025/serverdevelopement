@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: watchtower
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: watchtower
+  template:
+    metadata:
+      labels:
+        app: watchtower
+    spec:
+      containers:
+        - name: watchtower
+          image: nickfedor/watchtower:latest
+          env:
+            - name: WATCHTOWER_NOTIFICATION_URL
+              valueFrom:  
+                secretKeyRef:
+                  name: telegram
+                  key: telegram_api
+            - name: WATCHTOWER_NOTIFICATION_TITLE_TAG
+              value: homepage
+          volumeMounts:
+            - name: watchtower-volume
+              mountPath: /app/config
+      volumes:
+        - name:  watchtower-volume
+          persistentVolumeClaim:
+            claimName: watchtower
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: telegram
+type: Opaque
+stringData:
+  # aquí van tus variables, en texto plano (no hace falta que tú las
+  # codifiques en Base64 — Kubernetes lo hace solo al guardarlas)
+  telegram_api: "secret_token" 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: watchtower
+spec:
+  accessModes:
+    - ReadWriteOnce  # cuántos Pods pueden usarlo al mismo tiempo (esto casi siempre es así)
+  resources:
+    requests:
+      storage: 1Mi
