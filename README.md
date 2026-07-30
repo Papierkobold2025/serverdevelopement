@@ -85,6 +85,8 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 ├── k3s
 │   ├── archive
 │   │   └── watchtower.yaml
+│   ├── automation
+│   │   └── semaphore.yaml
 │   └── monitoring
 │       ├── grafana.yml
 │       ├── homepage.yaml
