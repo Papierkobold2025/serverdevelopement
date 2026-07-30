@@ -19,21 +19,21 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 | **K3s** | Hipervisor de Kubernetes, en proceso de concentrar servicios |
 | **PBS** | Backups diarios de todos los nodos y sus VMs/contenedores |
 
-📄 Especificaciones de hardware completas en [`cluster/nodes.md`](cluster/nodes.md)
+📄 Especificaciones de hardware completas en [Nodes](cluster/nodes.md)
 
 ## Servicios
 
 | Servicio | Dónde vive | Documentación |
 |---|---|---|
-| Nextcloud | VM | [`docs/nextcloud.md`](docs/nextcloud.md) |
-| NPM | VM | [`docs/nginx.md`](docs/nginx.md) |
-| Pi-hole | VM | [`docs/pihole.md`](docs/pihole.md) |
-| Vaultwarden | VM | [`docs/vaultwarden.md`](docs/vaultwarden.md) |
-| Keycloak | LXC | [`docs/keycloak.md`](docs/keycloak.md) |
-| NetBird | LXC | [`docs/netbird.md`](docs/netbird.md) |
-| Portainer | LXC | [`docs/portainer.md`](docs/portainer.md) |
-| Homepage, Prometheus, Grafana, Semaphore | **k3s** | [`docs/k3s.md`](docs/k3s.md) |
-| Backups (PBS) | VM dedicada | [`cluster/backup.md`](cluster/backup.md) |
+| Nextcloud | VM | [Nextcloud](docs/nextcloud.md) |
+| NPM | VM | [Nginx](docs/nginx.md) |
+| Pi-hole | VM | [Pihole](docs/pihole.md) |
+| Vaultwarden | VM | [Vaultwarden](docs/vaultwarden.md) |
+| Keycloak | LXC | [Keycloak](docs/keycloak.md) |
+| NetBird | LXC | [Netbird](docs/netbird.md) |
+| Portainer | LXC | [Portainer](docs/portainer.md) |
+| Homepage, Prometheus, Grafana, Semaphore | **k3s** | [K3s](docs/k3s.md) |
+| Backups (PBS) | VM dedicada | [Backup](cluster/backup.md) |
 
 ## Kubernetes (k3s)
 
@@ -63,53 +63,18 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 
 ## Índice de documentación
 
-```
-├── cluster
-│   ├── backup.md
-│   └── nodes.md
-├── docs
-│   ├── archive
-│   │   ├── automation.md
-│   │   ├── homepage.md
-│   │   ├── monitoring.md
-│   │   └── watchtower.md
-│   ├── docker.md
-│   ├── k3s.md
-│   ├── keycloak.md
-│   ├── netbird.md
-│   ├── nextcloud.md
-│   ├── nginx.md
-│   ├── pihole.md
-│   ├── portainer.md
-│   └── vaultwarden.md
-├── k3s
-│   ├── archive
-│   │   └── watchtower.yaml
-│   ├── automation
-│   │   └── semaphore.yaml
-│   └── monitoring
-│       ├── grafana.yml
-│       ├── homepage.yaml
-│       ├── prometheus-exporter.yml
-│       ├── prometheus-map.yml
-│       └── prometheus.yml
-├── semaphore
-│   ├── ansible
-│   │   └── playbooks
-│   │       ├── container-deploy.yaml
-│   │       ├── nodes-update.yml
-│   │       └── vms-update.yml
-│   └── terraform
-│       ├── keycloak
-│       │   └── main.tf
-│       ├── landingpage
-│       │   └── main.tf
-│       ├── netbird
-│       │   └── main.tf
-│       ├── portainer
-│       │   └── main.tf
-│       └── vaultwarden
-│           └── main.tf
-└── ssh-keys
-    └── cluster-authorized_keys
-```
+- [Automatización (Semaphore/Ansible/Terraform)](docs/automation.md)
+- [Docker](docs/docker.md)
+- [Homepage](docs/homepage.md)
+- [K3s / Kubernetes](docs/k3s.md)
+- [Keycloak](docs/keycloak.md)
+- [Monitoreo (Prometheus/Grafana)](docs/monitoring.md)
+- [NetBird](docs/netbird.md)
+- [Nextcloud](docs/nextcloud.md)
+- [Nginx Proxy Manager](docs/nginx.md)
+- [Pi-hole](docs/pihole.md)
+- [Portainer](docs/portainer.md)
+- [Vaultwarden](docs/vaultwarden.md)
+- [Watchtower](docs/watchtower.md)
+- [Backups (PBS)](cluster/backup.md)
+- [Nodos del clúster](cluster/nodes.md)
