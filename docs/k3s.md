@@ -24,4 +24,4 @@
 curl -sfL https://get.k3s.io | sh -
 ```
 
-- Los manifiestos específicos de los servicios migrados estan en /serverdevelopment/k3s
+- Los manifiestos específicos de los servicios migrados estan en [/serverdevelopment/k3s](k3s)
