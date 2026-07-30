@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: semaphore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: semaphore
+  template:
+    metadata:
+      labels:
+        app: semaphore
+    spec:
+      containers:
+        - name: semaphore
+          image: semaphoreui/semaphore:v2.15.0
+          ports:
+            - containerPort: 3000
+          env:
+            - name: SEMAPHORE_DB_DIALECT
+              value: 'bolt'
+            - name: SEMAPHORE_ADMIN_NAME
+              value: 'admin'
+            - name: SEMAPHORE_ADMIN_EMAIL
+              value: 'email@gmail.com'
+            - name: SEMAPHORE_ADMIN
+              value: 'admin'
+            - name: SEMAPHORE_SCHEDULE_TIMEZONE
+              value: 'Europe/Zurich'
+            - name: TZ
+              value: 'Europe/Zurich'
+            - name: SEMAPHORE_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: semaphore
+                  key: semaphore_password
+            - name: SEMAPHORE_ACCESS_KEY_ENCRYPTION
+              valueFrom:
+                secretKeyRef:
+                  name: semaphore
+                  key: semaphore_encryption
+          volumeMounts:
+            - name: semaphore-volume
+              mountPath: /var/lib/semaphore
+      volumes:
+        - name: semaphore-volume
+          hostPath:
+            path: /srv/semaphore/semaphore-data
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: semaphore
+type: Opaque
+stringData:
+  semaphore_password: 'password'
+  semaphore_encryption: 'ecnryption-secret'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: semaphore-svc
+spec:
+  selector:
+    app: semaphore
+  ports:
+    - port: 3003
+      targetPort: 3000
+  type: NodePort
