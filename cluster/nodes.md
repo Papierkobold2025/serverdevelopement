@@ -35,16 +35,8 @@ Specs de hardware de cada nodo físico, sin direcciones IP (documentación inter
 - **Boot Mode**: EFI
 
 ## k3s
-- **Producto**: Nodo dedicado a Kubernetes (k3s), sexto miembro del clúster
+- **Producto**: Nodo dedicado a Kubernetes (k3s)
 - **Notas**: hardware de laptop reutilizada; specs pendientes de documentar
-
-## pbs-homelab
-- **CPU(s)**: 8 x Intel Core i7-8559U @ 2.70GHz (1 Socket)
-- **RAM total**: 62.67 GiB
-- **Almacenamiento (root)**: 956.93 GB
-- **Kernel**: 6.17.2-1-pve
-- **Producto**: Proxmox Backup Server (no Proxmox VE — nodo dedicado a backups)
-- **Boot Mode**: EFI
 
 ## Resumen comparativo
 
@@ -55,7 +47,8 @@ Specs de hardware de cada nodo físico, sin direcciones IP (documentación inter
 | api-panel | i7-7567U | 4 | 62.68 GiB | 1.28 TiB |
 | panel | i7-13620H | 16 | 62.44 GiB | 1.71 TiB |
 | k3s | *(pendiente)* | *(pendiente)* | *(pendiente)* | *(pendiente)* |
-| pbs-homelab | i7-8559U | 8 | 62.67 GiB | 956.93 GB (root) |
+
+> **Nota:** `pbs-homelab` no aparece en esta tabla — es un servidor de Proxmox Backup Server, físicamente separado del clúster de Proxmox VE (no participa en corosync/pvecm). Ver `cluster/backup.md` para sus specs.
 
 ---
 

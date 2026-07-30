@@ -13,6 +13,7 @@ Integración de Proxmox Backup Server (PBS) como quinto nodo dedicado del clúst
 - CPU(s): 8 x Intel Core i7-8559U @ 2.70GHz (1 Socket)
 - RAM total: 62.67 GiB
 - Almacenamiento (root): 956.93 GB
+- Datastore de backups (vmbackup-...): 1.87 TB (uso actual: 120.12 GB, 6.43%)
 - Kernel: 6.17.2-1-pve
 - Producto: Proxmox Backup Server (no Proxmox VE)
 
