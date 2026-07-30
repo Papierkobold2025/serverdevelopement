@@ -68,19 +68,20 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 │   ├── backup.md
 │   └── nodes.md
 ├── docs
-│   ├── automation.md
+│   ├── archive
+│   │   ├── automation.md
+│   │   ├── homepage.md
+│   │   ├── monitoring.md
+│   │   └── watchtower.md
 │   ├── docker.md
-│   ├── homepage.md
 │   ├── k3s.md
 │   ├── keycloak.md
-│   ├── monitoring.md
 │   ├── netbird.md
 │   ├── nextcloud.md
 │   ├── nginx.md
 │   ├── pihole.md
 │   ├── portainer.md
-│   ├── vaultwarden.md
-│   └── watchtower.md
+│   └── vaultwarden.md
 ├── k3s
 │   ├── archive
 │   │   └── watchtower.yaml
