@@ -62,6 +62,7 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 - [ ] HA / replicación multi-nodo de k3s
 
 ##Índice de documentación
+
 ```
 ├── cluster
 │   ├── backup.md
