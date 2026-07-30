@@ -1,34 +1,38 @@
 # Semaphore
 
-Semaphore es una interfaz que permite automatizar tareas repetitivas a traves de varias VMs/Hipervisores.
+- Semaphore es una interfaz que permite automatizar tareas repetitivas a traves de varias VMs/Hipervisores.
 
-La meta es poder actualizar, instalar y crear entornos de una manera mas documentada, controlada y eficiente entre varias maquinas.
+- Herramienta integrada para poder automatizar de mejor manera el flujo de creación de la infraestructura
 
-##Actualizacion de nodos
+## Decisiones
 
-- Primer proyecto creado dentro del entorno de Semaphore por medio de un Playbooks.
+- Utilización específica de Ansible en vez de usar scripts de bach que viene incluído con las herramientas de Semaphore, debido a falta de automatización completa
 
-- Ansible playbook vive en `semaphore/playbooks/ansible/nodes-update.yml`.
+### Runnbook
 
-- Corre via Semaphore (Task Template "Nodes-Update", inventario "Nodes"),
+- Instalación de docker compose de semaphore
 
-- Esta programado para ejecutarse los domingos a las 2:30 AM hora Europe/Zurich.
+``` bash
+services:
+  semaphore:
+    ports:
+      - 192.168.X.X:3000:3000
+    image: semaphoreui/semaphore:v2.15.0
+    environment:
+      SEMAPHORE_DB_DIALECT: '${DB_DIALECT}'
+      SEMAPHORE_ADMIN_PASSWORD: '${PASSWORD}'
+      SEMAPHORE_ADMIN_NAME: '${ADMIN}'
+      SEMAPHORE_ADMIN_EMAIL: '${EMAIL}'
+      SEMAPHORE_ADMIN: '${ADMIN}'
+      SEMAPHORE_SCHEDULE_TIMEZONE: '${TZ}'
+      TZ: '${TZ}'
+      SEMAPHORE_ACCESS_KEY_ENCRIPTION: '${ENCRIPTION}'
+    volumes:
+      - semaphore-data:/var/lib/semaphore
+volumes:
+  semaphore-data:
 
-## Decision: update + reboot en un solo playbook
-
-- Evalue si separar la actualizacion del reinicio condicionado para detectar si algo se rompe (ej. Wireguard tras reinicio ya paso antes).
-
-- Se descarto porque ninguna alternativa cambiaba el tiempo real de deteccion.
-
-## Decision: Separacion de claves y contraseñas de la configuracion del compose.yaml
-
-- Evaluacion del peligro de dejar contraseñas dentro del contexto del compose.yaml al hacer el push a repositorio publico de github
-
-## Creacion de primer codigo de Teraform
-
-- Configuracion del primer codigo de Terraform dentro de Semaphore
-
-- Configuracion para crear contenedores en vez de VMs
+```
 
 ## Comandos útiles
 
@@ -65,31 +69,3 @@ La meta es poder actualizar, instalar y crear entornos de una manera mas documen
   - Terraform por defecto guarda su state dentro del directorio /tmp/ del contenedor, por lo que no persiste sesiones
 
     - Solucion encontrada: Referenciar directorio explicito en main.tf para guardar el state de forma persistente
-
-#### Runbook
-
-- Backup Job de PBS ("Todas las VMs") en realidad cubre VMs y CTs — 
-  el nombre es histórico, no una limitación real. semaphore-data 
-  queda respaldado.
-
-``` bash
-services:
-  semaphore:
-    ports:
-      - 192.168.X.X:3000:3000
-    image: semaphoreui/semaphore:v2.15.0
-    environment:
-      SEMAPHORE_DB_DIALECT: '${DB_DIALECT}'
-      SEMAPHORE_ADMIN_PASSWORD: '${PASSWORD}'
-      SEMAPHORE_ADMIN_NAME: '${ADMIN}'
-      SEMAPHORE_ADMIN_EMAIL: '${EMAIL}'
-      SEMAPHORE_ADMIN: '${ADMIN}'
-      SEMAPHORE_SCHEDULE_TIMEZONE: '${TZ}'
-      TZ: '${TZ}'
-      SEMAPHORE_ACCESS_KEY_ENCRIPTION: '${ENCRIPTION}'
-    volumes:
-      - semaphore-data:/var/lib/semaphore
-volumes:
-  semaphore-data:
-
-```

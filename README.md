@@ -78,7 +78,8 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 │   ├── nginx.md
 │   ├── pihole.md
 │   ├── portainer.md
-│   └── vaultwarden.md
+│   ├── vaultwarden.md
+│   └── watchtower.md
 ├── k3s
 │   ├── archive
 │   │   └── watchtower.yaml
@@ -89,25 +90,22 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 │       ├── prometheus-map.yml
 │       └── prometheus.yml
 ├── semaphore
-│   ├── compose.yaml
-│   └── playbooks
-│       └── ansible
-│           ├── container-deploy.yaml
-│           ├── nodes-update.yml
-│           └── vms-update.yml
-├── ssh-keys
-│   └── cluster-authorized_keys
-├── terraform
-│   ├── keycloak
-│   │   └── main.tf
-│   ├── landingpage
-│   │   └── main.tf
-│   ├── netbird
-│   │   └── main.tf
-│   ├── portainer
-│   │   └── main.tf
-│   └── vaultwarden
-│       └── main.tf
-└── watchtower
-    └── compose.yml
+│   ├── ansible
+│   │   └── playbooks
+│   │       ├── container-deploy.yaml
+│   │       ├── nodes-update.yml
+│   │       └── vms-update.yml
+│   └── terraform
+│       ├── keycloak
+│       │   └── main.tf
+│       ├── landingpage
+│       │   └── main.tf
+│       ├── netbird
+│       │   └── main.tf
+│       ├── portainer
+│       │   └── main.tf
+│       └── vaultwarden
+│           └── main.tf
+└── ssh-keys
+    └── cluster-authorized_keys
 ```

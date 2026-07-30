@@ -1,14 +1,10 @@
-# Configuración de Nginx
+# Nginx
 
-Nuevo dominio para poder publicar servicios a red externa enrutando por Nginx por reverse Proxy.
+- Configuración de Reverse Proxy dentro de la infraestructura para utilizar subdominios dentro del dominio.
 
-Dominio comprado: midominio.com
+- Configuración de dominio con certificados SSL.
 
-## Instalación de Docker de nginx: 
-
-```bash
-sudo docker run --name mynginx1 -p 80:80 -d nginx
-```
+## Runbook
 
 Configuración de documento /srv/nginx/compose.yml:
 
@@ -28,14 +24,6 @@ services:
 
 ```
 
-# Dominio configurado con reverse proxy
-
-Configuración de subdominio nextcloud.midominio.com para utilización de Nextcloud
-
-Configuración de más subdominios pero manteniéndolos dentro de red local para no exponerlos a red externa
-
-## Configuración de puertos y red
-
 - Configuración de puerto para Apache en Nextcloud a puerto 11000 para poder usar los puertos 80 y 443 dirigidos a nginx
 
 - Apertura de puertos a nivel de router, 80 && 443 dirigidos a la IP de nginx y 11000 a Nextcloud
@@ -54,10 +42,3 @@ Configuración de más subdominios pero manteniéndolos dentro de red local para
 
    - Instalación de certificado SSL forzando SSL
 
-- Conflicto de puerto 80 entre `mynginx1` (prueba inicial) y `npm` (Nginx Proxy Manager)
-    
-    - Solución encontrada:
-
-    - `docker stop mynginx1` antes de levantar `npm` vía docker-compose
-
-    - Contenedor de prueba quedó detenido (Exited) en el host, pendiente limpieza con `docker rm`
