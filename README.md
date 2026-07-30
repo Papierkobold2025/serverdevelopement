@@ -61,7 +61,7 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 - [ ] Wazuh — SIEM, centralización de logs de seguridad
 - [ ] HA / replicación multi-nodo de k3s
 
-##Indice de documentación
+## Índice de documentación
 
 ```
 ├── cluster
