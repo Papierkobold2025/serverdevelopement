@@ -25,3 +25,17 @@ curl -sfL https://get.k3s.io | sh -
 ```
 
 - Los manifiestos específicos de los servicios migrados estan en [K3s](../k3s)
+
+## Network Policies
+
+- Aislamiento de trafico entre pods dentro de k3s, y de pods hacia red interna.
+
+### Decisiones
+
+- Patrón de aislamiento deny-all por namespace y apertura de tráfico aislado mediante allow.
+
+### Dificultades encontradas
+
+- Dos Network Policies no pueden tener el mismo nombre en el mismo namespace, la segunda siempre sobreescribirá la primer regla.
+
+- ipBlock interno apuntando a rango de IP de un Service 10.43.X.X nunca funciona por como k3s enruta tráfico (Necesita IPs específicas, no rangos)

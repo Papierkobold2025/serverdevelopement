@@ -32,7 +32,7 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 | Keycloak | LXC | [Keycloak](docs/keycloak.md) |
 | NetBird | LXC | [Netbird](docs/netbird.md) |
 | Portainer | LXC | [Portainer](docs/portainer.md) |
-| Homepage, Prometheus, Grafana, Semaphore | **k3s** | [K3s](docs/k3s.md) |
+| Zabbix, Homepage, Prometheus, Grafana, Semaphore | **k3s** | [K3s](docs/k3s.md) |
 | Backups (PBS) | VM dedicada | [Backup](cluster/backup.md) |
 
 ## Kubernetes (k3s)
@@ -77,4 +77,5 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 - [Vaultwarden](docs/vaultwarden.md)
 - [Watchtower](docs/watchtower.md)
 - [Backups (PBS)](cluster/backup.md)
+- [Zabbix](docs/zabbix.md)
 - [Nodos del clúster](cluster/nodes.md)

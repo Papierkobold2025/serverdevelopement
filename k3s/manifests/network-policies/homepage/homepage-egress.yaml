@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-zabbix-egress-homepage
+  namespace: monitoring
+spec:
+  podSelector:
+    matchLabels:
+      app: homepage
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 192.168.1.0/24
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: automation
+          podSelector:
+            matchLabels:
+              app: semaphore
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+          podSelector:
+            matchLabels:
+              app: grafana
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: zabbix
