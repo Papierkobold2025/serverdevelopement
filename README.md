@@ -78,4 +78,5 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 - [Watchtower](docs/watchtower.md)
 - [Backups (PBS)](cluster/backup.md)
 - [Zabbix](docs/zabbix.md)
+- [Homarr](docs/homarr.md)
 - [Nodos del clúster](cluster/nodes.md)

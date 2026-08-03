@@ -1,0 +1,236 @@
+# Egress Policies
+
+# Egress deny All namespace monitoring
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-egress-monitoring
+  namespace: monitoring
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+
+---
+
+# Egress deny All namespace automation
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-egress-automation
+  namespace: automation
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+
+---
+
+# Egress deny All namespace portainer
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-egress-portainer
+  namespace: portainer
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+
+---
+
+# Egress allow DNS resolve monitoring namespace
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns-egress
+  namespace: monitoring
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - podSelector:
+            matchLabels:
+              app: semaphore
+      ports:
+        - protocol: TCP
+          port: 3003
+    - to:
+        - podSelector:
+            matchLabels:
+              app: prometheus
+      ports:
+        - protocol: TCP
+          port: 9090
+    - to:
+        - podSelector:
+            matchLabels:
+              app: grafana
+      ports:
+        - protocol: TCP
+          port: 3000
+    - to:
+        - podSelector:
+            matchLabels:
+              app: homarr
+      ports:
+        - protocol: TCP
+          port: 7575
+    - to:
+        - podSelector:
+            matchLabels:
+              app: zabbix-zabbix-web
+      ports:
+        - protocol: TCP
+          port: 8080
+    - to:
+        - podSelector:
+            matchLabels:
+              app: zabbix-zabbix-server
+      ports:
+        - protocol: TCP
+          port: 10051
+        - protocol: TCP
+          port: 10052
+    - to:
+        - podSelector:
+            matchLabels:
+              app: zabbix-postgresql
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to:
+        - podSelector:
+            matchLabels:
+              app: zabbix-zabbix-webservice
+      ports:
+        - protocol: TCP
+          port: 10053
+
+---
+
+# Egress allow DNS resolve automation namespace
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns-egress-automation
+  namespace: automation
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - podSelector:
+            matchLabels:
+              app: semaphore
+      ports:
+        - protocol: TCP
+          port: 3000
+    - to:
+        - podSelector:
+            matchLabels:
+              app: portainer
+      ports:
+        - protocol: TCP
+          port: 9000
+
+---
+
+# Egress allow DNS resolve portainer namespace
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns-egress-portainer
+  namespace: portainer
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - podSelector:
+            matchLabels:
+              app: portainer-agent
+      ports:
+        - protocol: TCP
+          port: 9001
+
+---
+
+# Ingress Policies
+
+# Ingress deny All namespace monitoring 
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress-monitoring
+  namespace: monitoring
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+
+---
+
+# Ingress deny All namespace automation
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress-automation
+  namespace: automation
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+
+---
+
+# Ingress deny All namespace portainer
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress-portainer
+  namespace: portainer
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress

@@ -1,0 +1,109 @@
+# Portainer Egress
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-portainer-egress
+  namespace: automation
+spec:
+  podSelector:
+    matchLabels:
+      app: portainer
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 192.168.1.0/24
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: portainer
+          podSelector:
+            matchLabels:
+              app: portainer-agent
+
+---
+
+# Portainer Ingress
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-portainer-ingress
+  namespace: automation
+spec:
+  podSelector:
+    matchLabels:
+      app: portainer
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 192.168.1.0/24
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+          podSelector:
+            matchLabels:
+              app: homarr
+
+---
+
+# Portainer-Agent Ingress
+
+# Portainer Ingress
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-portainer-agent-ingress
+  namespace: portainer
+spec:
+  podSelector:
+    matchLabels:
+      app: portainer-agent
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 192.168.1.0/24
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: automation
+          podSelector:
+            matchLabels:
+              app: portainer
+
+---
+
+# Portainer-Agent Egress
+
+# Portainer Egress
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-portainer-agent-egress
+  namespace: portainer
+spec:
+  podSelector:
+    matchLabels:
+      app: portainer-agent
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 192.168.1.0/24
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: automation
+          podSelector:
+            matchLabels:
+              app: portainer

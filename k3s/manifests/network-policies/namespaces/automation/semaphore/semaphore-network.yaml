@@ -1,7 +1,33 @@
+# Semaphore Egress rules
+
+# Semaphore allow Egress
+
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-zabbix-ingress-semaphore
+  name: allow-semaphore-egress
+  namespace: automation
+spec:
+  podSelector:
+    matchLabels:
+      app: semaphore
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 192.168.1.0/24
+
+---
+
+# Semaphore Ingress rules
+
+# Semaphore allow Ingress
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-semaphore-ingress
   namespace: automation
 spec:
   podSelector:

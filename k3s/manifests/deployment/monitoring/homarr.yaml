@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homarr
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homarr
+  template:
+    metadata:
+      labels:
+        app: homarr
+    spec:
+      containers:
+        - name: homarr
+          image: ghcr.io/homarr-labs/homarr:latest
+          ports:
+            - containerPort: 7575
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: 'Europe/Zurich'
+            - name: SECRET_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: homarr
+                  key: homarr_secret
+          volumeMounts:
+            - name: homarr-volume
+              mountPath: /var/run/docker.sock
+              readOnly: true
+            - name: homarr-data
+              mountPath: /appdata
+      volumes:
+        - name: homarr-volume
+          hostPath:
+            path: /var/run/docker.sock
+        - name: homarr-data
+          hostPath:
+            path: /srv/homarr/appdata
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: homarr
+  namespace: monitoring
+type: Opaque
+stringData:
+  # aquí van tus variables, en texto plano (no hace falta que tú las
+  # codifiques en Base64 — Kubernetes lo hace solo al guardarlas)
+  homarr_secret: 'secret'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homarr
+  namespace: monitoring
+spec:
+  selector:
+    app: homarr
+  ports:
+    - port: 7575
+      targetPort: 7575
+      nodePort: 30016
+  type: NodePort
