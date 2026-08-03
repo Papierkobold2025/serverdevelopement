@@ -8,4 +8,4 @@
 
 ## Playbook
 
-- Arhivo de configuracion en [homarr](serverdevelopment/k3s/manifests/deployment/monitoring/homarr.yaml)
+- Arhivo de configuracion en [homarr](../k3s/manifests/deployment/monitoring/homarr.yaml)
