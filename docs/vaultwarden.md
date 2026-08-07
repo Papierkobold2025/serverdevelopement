@@ -1,18 +1,18 @@
 # Vaultwarden
 
-- Password manager self-hosted, propiedad de Bitwarden en formato OpenSource
+- Self-hosted password manager, owned by Bitwarden in Open Source format.
 
-## Decisiones
+## Decisions
 
-- Acceso solo interno para evitar comprometer todas las contraseñas para entrar a servicios
+- Internal access only to avoid compromising all passwords for accessing services.
 
-- HA replicado a nextcloud-sec por la criticalidad de tener acceso a contraseñas
+- HA replicated to nextcloud-sec due to the critical importance of having access to passwords.
 
-- Watchtower instalado para asegurar que el contenedor docker siempre estuviera en la version mas actual para evitar versiones deprecadas
+- Watchtower installed to ensure the Docker container was always running the latest version to avoid deprecated versions.
 
-## Dificultades encontradas
+## Issues encountered
 
-- Creación de usuario vía "Invite User" del panel admin falla (bug conocido con organizationId en el link) — hay que crear el usuario entrando directo a la URL raíz
+- Creating a user via the admin panel's "Invite User" fails (a known bug with the organizationId in the link) — the user must be created by going directly to the root URL.
 
 ## Runbook
 

@@ -1,12 +1,12 @@
 # Watchtower
 
-- Integración de Watchtower dentro del cluster para poder mantener actualizados los dockers instalados
+- Integration of Watchtower within the cluster to keep the installed Docker containers up to date.
 
-- Se trata de un servicio que se tiene que instalar en cada nodo, VM o contenedor que contiene dockers para pasar actualizaciones automáticas y borrar contenedores viejos
+- This is a service that must be installed on each node, VM, or container that contains Docker so that automatic updates can be applied and old containers can be removed.
 
-## Decisiones
+## Decisions
 
-- Quedará deprecado para la mayor parte del proyecto: k3s usa containerd por default (no Docker), y Watchtower depende del socket de Docker para funcionar.
+- It will be deprecated for most of the project: k3s uses containerd by default (not Docker), and Watchtower depends on the Docker socket to function.
 
 ### Runbook
 ```bash

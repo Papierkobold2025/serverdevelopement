@@ -1,24 +1,24 @@
 # K3s
 
-- Configuración de K3s para empezar a aprender kubernetes
+- K3s setup to start learning Kubernetes.
 
-## Decisiones
+## Decisions
 
-- Aislamiento de kubernetes dentro de un nuevo hipervisor especializado
+- Isolation of Kubernetes inside a new, specialized hypervisor.
 
-- Instalación K3s sobre una VM de Proxmox porque K3s tiene como requisito acceso a módulos de Kernel y manejo directo de iptables.
+- Installation of K3s on a Proxmox VM because K3s requires access to kernel modules and direct handling of iptables.
 
-- Usé hostPath (apunta directo a una carpeta del disco del nodo) en vez de PVC (donde Kubernetes decide y gestiona el almacenamiento por su cuenta) — es el mismo patrón que ya conocía de Docker Compose, más fácil de entender para un primer manifiesto. Revisar PVC si más adelante quiero que Kubernetes administre el disco en vez de mí
+- I used hostPath (pointing directly to a folder on the node disk) instead of PVC (where Kubernetes decides and manages storage on its own) — it is the same pattern I already knew from Docker Compose, easier to understand for a first manifest. I should review PVC later if I want Kubernetes to manage the disk instead of me.
 
-## Dificultades encontradas
+## Issues encountered
 
-- kubectl resultó ser el mismo binario de k3s (symlink), y por diseño busca su config en /etc/rancher/k3s/k3s.yaml (solo lectura root), ignorando la copia que hice en ~/.kube/config
+- kubectl turned out to be the same binary as k3s (a symlink), and by design it looks for its config at /etc/rancher/k3s/k3s.yaml (read-only for root), ignoring the copy I made in ~/.kube/config.
 
-  - Solución: forzar la ruta correcta con la variable KUBECONFIG, agregada a ~/.bashrc para que sea permanente
+  - Solution: force the correct path with the KUBECONFIG variable, added to ~/.bashrc so it is permanent.
 
 ## Runbook
 
-- Instalación de servidor k3s
+- K3s server installation
 
 ```bash
 curl -sfL https://get.k3s.io | sh -
@@ -26,27 +26,27 @@ curl -sfL https://get.k3s.io | sh -
 
 ## Network Policies
 
-- Aislamiento de trafico entre pods dentro de k3s, y de pods hacia red interna.
+- Isolation of traffic between pods inside k3s, and from pods to the internal network.
 
-### Decisiones
+### Decisions
 
-- Patrón de aislamiento deny-all por namespace y apertura de tráfico aislado mediante allow.
+- Deny-all isolation pattern by namespace, with traffic opened selectively through allow rules.
 
-- Las reglas actuales permiten tráfico desde/hacia el rango completo de la red plana (`192.168.1.0/24`) para Portainer y su agente, en vez de restringir a IPs específicas — mismo enfoque de aceptación de riesgo inicial que en la segmentación de red general (ver [network.md](network.md)), pendiente de endurecer (ver Roadmap: "Configuración de firewall en K3s")
+- The current rules allow traffic to and from the full flat network range (`192.168.1.0/24`) for Portainer and its agent, instead of restricting it to specific IPs — the same initial risk-acceptance approach used in the general network segmentation (see [opnsense](opnsense.md)), pending hardening (see Roadmap: "K3s firewall configuration").
 
-### Dificultades encontradas
+### Issues encountered
 
-- Dos Network Policies no pueden tener el mismo nombre en el mismo namespace, la segunda siempre sobreescribirá la primer regla.
+- Two NetworkPolicies cannot have the same name in the same namespace; the second will always overwrite the first rule.
 
-- ipBlock interno apuntando a rango de IP de un Service 10.43.X.X nunca funciona por como k3s enruta tráfico (Necesita IPs específicas, no rangos)
+- An internal ipBlock targeting the IP range of a Service such as 10.43.X.X never works because of how k3s routes traffic (it requires specific IPs, not ranges).
 
-### Nota
+### Note
 
-- `portainer-agent` corre en su propio namespace (`portainer`), creado automáticamente al desplegar el agente — no es parte del árbol `automation` a nivel de Kubernetes, solo a nivel organizacional del repositorio.
+- `portainer-agent` runs in its own namespace (`portainer`), created automatically when the agent is deployed — it is not part of the `automation` tree at the Kubernetes level, only at the repository organization level.
 
 ### Workloads
 
-| Servicio | Manifiesto / Instalación |
+| Service | Manifest / Installation |
 |---|---|
 | Portainer | [portainer.yaml](../k3s/manifests/deployment/automation/portainer/portainer.yaml) |
 | Semaphore | [semaphore.yaml](../k3s/manifests/deployment/automation/semaphore/semaphore.yaml) |
@@ -55,13 +55,13 @@ curl -sfL https://get.k3s.io | sh -
 
 ### Network Policy Rules
 
-**Capa general** — baseline deny-all (Ingress/Egress) y reglas DNS/allow compartidas por namespace:
+**General layer** — baseline deny-all (Ingress/Egress) and shared DNS/allow rules by namespace:
 
 - [general.yaml](../k3s/manifests/network-policies/general/general.yaml)
 
-**Reglas específicas por servicio:**
+**Service-specific rules:**
 
-| Servicio | Namespace(s) | Archivo |
+| Service | Namespace(s) | File |
 |---|---|---|
 | Portainer + Portainer-Agent | automation, portainer | [portainer-network.yaml](../k3s/manifests/network-policies/namespaces/automation/portainer/portainer-network.yaml) |
 | Semaphore | automation | [semaphore-network.yaml](../k3s/manifests/network-policies/namespaces/automation/semaphore/semaphore-network.yaml) |

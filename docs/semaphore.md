@@ -1,73 +1,73 @@
 # Semaphore
 
-- Semaphore es una interfaz que permite automatizar tareas repetitivas a través de varias VMs/Hipervisores.
+- Semaphore is an interface that allows repetitive tasks to be automated across multiple VMs/hypervisors.
 
-- Herramienta integrada para poder automatizar de mejor manera el flujo de creación de la infraestructura
+- Integrated tool to automate the infrastructure creation workflow more effectively.
 
-## Decisiones
+## Decisions
 
-- Utilización específica de Ansible en vez de usar scripts de bash que viene incluído con las herramientas de Semaphore, debido a falta de automatización completa
+- Specific use of Ansible instead of using bash scripts included with Semaphore tools, due to lack of full automation.
 
-- Migración de Semaphore a K3s para mantener servicios de infraestructura en la misma instancia
+- Migration of Semaphore to K3s to keep infrastructure services on the same instance.
 
 ## Runbook
 
-- Configuración de entorno se encuentra en [K3s](../k3s/manifests/deployment/automation/semaphore.yaml)
+- The environment configuration is in [K3s](../k3s/manifests/deployment/automation/semaphore.yaml).
 
-## Comandos útiles
+## Useful commands
 
-- Acceso al entorno de ejecución:
+- Access to the execution environment:
 ```bash
-  kubectl exec -it <nombre-del-pod> -n <namespace> -- bash
+  kubectl exec -it <pod-name> -n <namespace> -- bash
 ```
 
-## Dificultades encontradas
+## Issues encountered
 
-- Typo en SEMAPHORE_ACCESS_KEY_ENCRYPTION (o falta total de esta variable) no truena el contenedor — genera una clave nueva silenciosamente en cada arranque, dejando ilegibles los secretos cifrados con la clave anterior (SSH keys, Variable Groups). Los Task Templates/Inventarios no van cifrados, así que siguen siendo visibles aunque los secretos ya no se puedan descifrar.
+- A typo in SEMAPHORE_ACCESS_KEY_ENCRYPTION (or the variable being completely absent) does not crash the container — it silently generates a new key on each startup, making previously encrypted secrets unreadable (SSH keys, Variable Groups). Task Templates/Inventories are not encrypted, so they remain visible even though the secrets can no longer be decrypted.
 
-- Al haber varias partes que tienen que ir en conjunto la configuración se dificultó un poco
+- Because several parts have to work together, the configuration was a bit difficult.
 
-  - Tiene que haber conexión ssh con todas las máquinas que tienen que ser automatizadas
+  - There must be SSH connectivity to all machines that need to be automated.
 
-  - Semaphore no puede crear conexión con nodos externos si la clave SSH tiene un Passphrase, parece ser una limitación del entorno
+  - Semaphore cannot create a connection to external nodes if the SSH key has a passphrase, apparently a limitation of the environment.
 
-    - Solución encontrada: eliminación de Passphrase para clave ssh
+    - Found solution: removing the passphrase from the SSH key.
 
-  - Migración de entornos yaml puede traer dificultades por la encriptación que Semaphore hace a los datos
+  - Migrating YAML environments can cause difficulties due to the encryption Semaphore applies to the data.
 
-    - Solución encontrada: reingresar claves ssh dentro de la GUI de Semaphore para que volviera a cifrarlas
+    - Found solution: re-enter the SSH keys in the Semaphore GUI so it would encrypt them again.
 
 ## Ansible
 
-- Escogí Ansible como solución para poder automatizar tareas repetitivas dentro de contenedores, VMs y nodos de proxmox
+- I chose Ansible as the solution to automate repetitive tasks inside containers, VMs, and Proxmox nodes.
 
-- Ansible actualmente lo utilizo para de manera automatizada actualizar *apt* de los contenedores, VMs y nodos y la instalación automatizada de Docker Compose
+- I currently use Ansible to automatically update *apt* on containers, VMs, and nodes, and to install Docker Compose automatically.
 
-- Los playbooks de ansible se encuentran en [ansible](../semaphore/ansible/playbooks/)
+- The Ansible playbooks are in [ansible](../semaphore/ansible/playbooks/).
 
 ## Terraform
 
-- Escogí Terraform para poder levantar de manera automatizada VMs y contenedores con ciertas especificaciones como CPU, RAM y almacenamiento
+- I chose Terraform to automatically create VMs and containers with certain specifications such as CPU, RAM, and storage.
 
-- Los manifiestos de Terraform se encuentran en [terraform](../semaphore/terraform/)
+- The Terraform manifests are in [terraform](../semaphore/terraform/).
 
-### Comandos útiles
+### Useful commands
 
-- Una vez dentro del contenedor de Terraform cada playbook nuevo genera un nuevo template; ni project ni repository cambian mientras el proyecto no cambie, pero el template siempre cambia:
+- Once inside the Terraform container, each new playbook generates a new template; neither the project nor the repository changes while the project remains the same, but the template always changes:
 ```bash
   cd /tmp/semaphore/project_3/repository_1_template_6/terraform/landingpage
 ```
 
-- Para sacar el output de Terraform de ese state: `terraform output -json` (o cualquier variable dentro de terraform)
+- To get the Terraform output from that state: `terraform output -json` (or any variable inside Terraform).
 
-### Dificultades encontradas
+### Issues encountered
 
-- No puede leer archivos configurados dentro del servidor donde está el docker
+- It cannot read files configured inside the server where Docker is running.
 
-  - Solución encontrada: creación de secretos dentro del entorno de Semaphore y referencia a variable dentro de main.tf
+  - Found solution: creating secrets inside the Semaphore environment and referencing the variable inside main.tf.
 
-- Necesita quitar privilege separation dentro de Proxmox, si no, no tiene derecho de crear contenedor
+- It needs privilege separation to be removed inside Proxmox; otherwise, it does not have permission to create a container.
 
-- Por defecto guarda su state dentro del directorio /tmp/ del contenedor, por lo que no persiste sesiones
+- By default it saves its state in the /tmp/ directory of the container, so it does not persist across sessions.
 
-  - Solución encontrada: referenciar directorio explícito en main.tf para guardar el state de forma persistente
+  - Found solution: reference an explicit directory in main.tf to save the state persistently.

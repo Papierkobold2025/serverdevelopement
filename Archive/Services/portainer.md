@@ -1,14 +1,14 @@
 # Portainer
 
-- Configuración de Portainer para poder tener control sobre los seervicios corriendo en los nodos
+- Portainer configuration to have control over the services running on the nodes.
 
-## Decisiones
+## Decisions
 
-- Creación de nuevo cliente en Keycloak para crear dos Tokens independientes para Login de Netbird y Portainer
+- Create a new client in Keycloak to create two independent tokens for NetBird and Portainer login.
 
 ### Runbook
 
-- Configuración de Portainer en /srv/portainer/compose.yaml
+- Portainer configuration in /srv/portainer/compose.yaml
 
 ```bash
 services:
@@ -25,7 +25,7 @@ volumes:
   portainer-data:
 ```
 
-- Despues de instalación de contenedor se tienen que configurar los demas entornos (Servicios a agregar)
+- After installing the container, the other environments must be configured (services to add).
 
 ```bash
 services:
@@ -40,4 +40,4 @@ services:
       - /var/lib/docker/volumes:/var/lib/docker/volumes
 ```
 
-- Agregar entornos dentro de Portainer mediante IP:puerto
+- Add environments inside Portainer via IP:port.

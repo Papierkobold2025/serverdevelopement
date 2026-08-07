@@ -1,33 +1,33 @@
 # Homepage configuration
 
-Integración de Homepage para poder tener una Landing Page desde donde poder abrir los servicios instalados
+Integration of Homepage to have a Landing Page from which to open the installed services.
 
-##  Meta a alcanzar a primer instancia:
+## Goal to be achieved at first instance:
 
-- Instalar Docker Compose para Homepage
+- Install Docker Compose for Homepage.
 
-- Configuración de páginas como Landing Page
+- Configure pages as a Landing Page.
 
-### Configuración de docker compose
+### Docker Compose configuration
 
-- Configuración de compose.yaml en ruta /srv/homepage/compose.yaml
+- Configuration of compose.yaml at path /srv/homepage/compose.yaml.
 
-- ``` yaml
+- ```yaml
   services:
     homepage:
       container_name: homepage
       image: ghcr.io/gethomepage/homepage:latest
       restart: unless-stopped
       ports:
-        - "192.168.1.128:3000:3000"
+        - "192.168.X.X:3000:3000"
       working_dir: /app
       volumes:
         - /srv/homepage/homepage-config:/app/config
         - /var/run/docker.sock:/var/run/docker.sock:ro
       environment:
-        HOMEPAGE_ALLOWED_HOSTS: homepage.apps.midominio.com
+        HOMEPAGE_ALLOWED_HOSTS: homepage.apps.mydomain.com
         PUID: 1000
         PGID: 1000
-   ```
+  ```
 
-- Levantar y bajar docker con sudo docker compose down y sudo docker compose up -d
+- Start and stop Docker with sudo docker compose down and sudo docker compose up -d.

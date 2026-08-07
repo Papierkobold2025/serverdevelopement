@@ -1,90 +1,91 @@
 # Serverdevelopment
 
-Infraestructura personal (homelab) documentada — portafolio técnico basado en Proxmox. Este repositorio demuestra habilidades en administración de sistemas, segmentación de red, automatización (Semaphore / Ansible / Terraform) y despliegue de servicios (K3s, Keycloak, Nextcloud). Está pensado para mostrar decisiones de diseño, runbooks y ejemplos de IaC.
+Personal infrastructure (homelab) documented — a technical portfolio based on Proxmox. This repository demonstrates skills in systems administration, network segmentation, automation (Semaphore / Ansible / Terraform), and service deployment (K3s, Keycloak, Nextcloud). It is intended to showcase design decisions, runbooks, and IaC examples.
 
 ---
 
-## Visión rápida
+## Quick overview
 
-- Stack: Proxmox · K3s · OPNSense · Nginx Proxy Manager · Pi-hole · Keycloak · Vaultwarden · NetBird
-- IaC / Automatización: Terraform · Ansible · Semaphore · Portainer
-- Observabilidad: Homarr · Zabbix
+- Stack: Proxmox · K3s · OPNSense · Nginx Proxy Manager · Pi-hole · Keycloak · Vaultwarden · wg-easy
+- IaC / Automation: Terraform · Ansible · Semaphore · Portainer
+- Observability: Homarr · Zabbix
 
-## Arquitectura general (resumen)
+## General architecture (summary)
 
-Infraestructura pensada en **aislamiento de servicios** para reducir la superficie de ataque y limitar movimientos laterales. La topología incluye un plano de red plana y una VLAN que aloja servicios de infraestructura, con OPNSense como puente/firewall entre planos.
+Infrastructure designed around **service isolation** to reduce the attack surface and limit lateral movement. The topology includes a flat network plane and a VLAN hosting infrastructure services, with OPNSense acting as the bridge/firewall between planes.
 
-### Nodos del clúster
+### Cluster nodes
 
-| Nodo | Propósito |
+| Node | Purpose |
 |---|---|
-| **Panel** | Hipervisor principal, hardware nuevo, almacena servicios críticos |
-| **API-Panel** | Hipervisor dedicado a APIs, dashboards y visualizaciones de estado del clúster/servicios |
-| **Nextcloud** | Hipervisor de almacenamiento personal (Nextcloud) |
-| **Nextcloud-sec** | Hipervisor de High Availability y replicación |
-| **i5** | Hipervisor de replicación y servicios no críticos |
-| **PBS** | Backups diarios de todos los nodos y sus VMs/contenedores |
+| **Panel** | Main hypervisor, new hardware, hosts critical services |
+| **API-Panel** | Hypervisor dedicated to APIs, dashboards, and cluster/service status visualizations |
+| **Nextcloud** | Hypervisor for personal storage (Nextcloud) |
+| **Nextcloud-sec** | Hypervisor for High Availability and replication |
+| **i5** | Hypervisor for replication and non-critical services |
+| **PBS** | Daily backups of all nodes and their VMs/containers |
 
-📄 Especificaciones de hardware completas en [cluster/nodes.md](cluster/nodes.md)
+📄 Complete hardware specifications in [cluster/nodes.md](cluster/nodes.md)
 
-## Servicios
+## Services
 
-| Servicio | Dónde vive | Documentación |
+| Service | Where it lives | Documentation |
 |---|---|---|
 | Nextcloud | VM | [Nextcloud](docs/nextcloud.md) |
 | NPM | VM | [Nginx](docs/nginx.md) |
 | Pi-hole | VM | [Pihole](docs/pihole.md) |
 | Vaultwarden | VM | [Vaultwarden](docs/vaultwarden.md) |
 | Keycloak | LXC | [Keycloak](docs/keycloak.md) |
-| NetBird | LXC | [Netbird](docs/netbird.md) |
-| K3s (clúster ligero) | VM | [K3s](docs/k3s.md) - aloja Portainer, Semaphore, Zabbix y Homarr |
-| Backups (PBS) | VM dedicada | [cluster/backup.md](cluster/backup.md) |
+| K3s (lightweight cluster) | VM | [K3s](docs/k3s.md) — hosts Portainer, Semaphore, Zabbix, and Homarr |
+| Backups (PBS) | Dedicated VM | [cluster/backup.md](cluster/backup.md) |
 
-## Automatización e Infraestructura como Código
+## Automation and Infrastructure as Code
 
-| Herramienta | Propósito | Documentación |
+| Tool | Purpose | Documentation |
 |---|---|---|
-| Semaphore | Pipelines de despliegue | [Semaphore](docs/semaphore.md) |
-| Ansible | Playbooks para configuración y parches | [Ansible](docs/semaphore.md#ansible) |
-| Terraform | Despliegue repetible de VMs | [Terraform](docs/semaphore.md#terraform) |
-| Portainer | Despliegue y configuración de contenedores y cluster de Kubernetes | [Portainer](docs/portainer.md) |
+| Semaphore | Deployment pipelines | [Semaphore](docs/semaphore.md) |
+| Ansible | Playbooks for configuration and patching | [Ansible](docs/semaphore.md#ansible) |
+| Terraform | Repeatable VM deployment | [Terraform](docs/semaphore.md#terraform) |
+| Portainer | Deployment and configuration of containers and the Kubernetes cluster | [Portainer](docs/portainer.md) |
 
-## Políticas de red
+## Network policies
 
-| Herramienta | Propósito | Documentación |
+| Tool | Purpose | Documentation |
 |---|---|---|
-| OPNSense | Firewall/Router de VLAN y red plana | [OPNSense](docs/opnsense.md) |
-| K3s | Firewall dentro del Cluster de K3s | [K3s](docs/k3s.md#network-policies) |
+| OPNSense | Firewall/router for the VLAN and flat network | [OPNSense](docs/opnsense.md) |
+| K3s | Firewall inside the K3s cluster | [K3s](docs/k3s.md#network-policies) |
+| wg-easy | VPN for accessing the flat network and VLAN | [wg-easy](docs/wg-easy.md) |
 
-## Roadmap / Pendientes
+## Roadmap / Pending items
 
-- [ ] Configuración de alertas con Zabbix a endpoint de Telegram
-- [ ] Configuración de firewall en K3s
-- [ ] Configuración de firewall en Proxmox
-- [ ] Ampliación de tareas de automatización en Semaphore, Terraform y cronjobs en Linux
-- [ ] Cloudflare Access como capa extra para servicios expuestos (Keycloak)
-- [ ] ntopng — visibilidad de tráfico de red
-- [ ] Wazuh — SIEM, centralización de logs de seguridad
-- [ ] HA / replicación multi-nodo de k3s
+- [ ] Configuration of alerts with Zabbix to a Telegram endpoint
+- [ ] Configuration of firewall in K3s
+- [ ] Configuration of firewall in Proxmox
+- [ ] Expansion of automation tasks in Semaphore, Terraform, and Linux cron jobs
+- [ ] Cloudflare Access as an extra layer for exposed services (Keycloak)
+- [ ] ntopng — visibility into network traffic
+- [ ] Wazuh — SIEM, centralization of security logs
+- [ ] HA / multi-node replication of k3s
 
-## Estado actual / En progreso
+## Current status / In progress
 
-> 🚧 **Segmentación de red en progreso.** Se ha creado una subred crítica y se está migrando parte de la infraestructura; las reglas en OPNSense y las validaciones DNS están en desarrollo. Detalles y runbooks en [Segmentación de red](docs/opnsense.md).
+> 🚧 **Network segmentation in progress.** A VLAN has been created and part of the infrastructure is being migrated; the rules in OPNSense and the DNS validations are still under development. Details and runbooks in [Network segmentation](docs/opnsense.md).
 
-## Índice de documentación archivada
+## Archived documentation index
 
-- Documentación histórica / archivada (referencia) — carpeta `Archive/Services/`:
-    - [Automatización (migrado)](Archive/Services/automation.md)
-    - [Homepage (histórico)](Archive/Services/homepage.md)
-    - [Monitoreo (histórico)](Archive/Services/monitoring.md)
-    - [Watchtower (histórico)](Archive/Services/watchtower.md)
-    - [Portainer (migrado)](Archive/Services/portainer.md)
+- Historical / archived documentation (reference) — folder `Archive/Services/`:
+    - [Automation (migrated)](Archive/Services/automation.md)
+    - [Homepage (historical)](Archive/Services/homepage.md)
+    - [Monitoring (historical)](Archive/Services/monitoring.md)
+    - [Watchtower (historical)](Archive/Services/watchtower.md)
+    - [Portainer (migrated)](Archive/Services/portainer.md)
+    - [Netbird (historical)](Archive/Services/netbird.md)
 
-## Índice de referencias rápidas
+## Quick reference index
 
-- Documentación de apoyo de desarrollo
-    - [Docker](ops/docker.md) — instalación base
+- Development support documentation
+    - [Docker](ops/docker.md) — base installation
 
 ---
 
-Última actualización: 2026-08-07
+Last updated: 2026-08-08

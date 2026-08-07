@@ -1,18 +1,18 @@
 # Semaphore
 
-- Semaphore es una interfaz que permite automatizar tareas repetitivas a traves de varias VMs/Hipervisores.
+- Semaphore is an interface that allows repetitive tasks to be automated across multiple VMs/hypervisors.
 
-- Herramienta integrada para poder automatizar de mejor manera el flujo de creación de la infraestructura
+- An integrated tool to automate the infrastructure creation workflow more effectively.
 
-## Decisiones
+## Decisions
 
-- Utilización específica de Ansible en vez de usar scripts de bach que viene incluído con las herramientas de Semaphore, debido a falta de automatización completa
+- Specific use of Ansible instead of using bash scripts that come included with Semaphore tools, due to a lack of full automation.
 
-### Runnbook
+### Runbook
 
-- Instalación de docker compose de semaphore
+- Installation of the Semaphore Docker Compose setup.
 
-``` bash
+```bash
 services:
   semaphore:
     ports:
@@ -31,41 +31,40 @@ services:
       - semaphore-data:/var/lib/semaphore
 volumes:
   semaphore-data:
-
 ```
 
-## Comandos útiles
+## Useful commands
 
-- Al conectarse al contenedor en el que corre Semaphore, lo que Terraform genera no es accesible desde la consola misma de Semaphorm. Para entrar al entorno de terraform mismo: ```bash docker exec -it semaphore-semaphore-1 bash ```
+- When connecting to the container where Semaphore runs, the Terraform-generated environment is not accessible from the Semaphore console itself. To enter the Terraform environment directly: ```bash docker exec -it semaphore-semaphore-1 bash ```
 
-- Una vez dentro del contenedor de Terraform cada playbook nuevo de Terraform genera un nuevo template, en este caso ni project ni repository cambian de mundo mientras el peoyecto no cambie, pero el template siempre cambia ```bash cd /tmp/semaphore/project_3/repository_1_template_6/terraform/landingpage ```
+- Once inside the Terraform container, each new Terraform playbook generates a new template; in this case, neither the project nor the repository changes while the project remains the same, but the template always changes: ```bash cd /tmp/semaphore/project_3/repository_1_template_6/terraform/landingpage ```
 
-- Dentro del proyecto correcto despues se puede sacar el output de terraform para ese state con: ```bash terraform output -json``` o cualquier variable dentro de terraform. 
+- From the correct project, the Terraform output for that state can be retrieved with: ```bash terraform output -json``` or any variable inside Terraform.
 
-### Dificultades encontradas
+### Issues encountered
 
-- Docker Compose nombra volúmenes según el nombre de carpeta (project name) — renombrar la carpeta (ej. semaphore → semaphore-viejo) crea un volumen NUEVO vacío en vez de reutilizar el existente. Para forzar el volumen correcto sin importar el nombre de carpeta: docker compose -p semaphore up -d
+- Docker Compose names volumes according to the folder name (project name) — renaming the folder (for example, semaphore → semaphore-old) creates a NEW empty volume instead of reusing the existing one. To force the correct volume regardless of the folder name: docker compose -p semaphore up -d
 
-- Typo en SEMAPHORE_ACCESS_KEY_ENCRYPTION (o falta total de esta variable) no truena el contenedor — genera una clave nueva silenciosamente en cada arranque, dejando ilegibles los secretos cifrados con la clave anterior (SSH keys, Variable Groups). Los Task Templates/Inventarios no van cifrados, así que siguen siendo visibles aunque los secretos ya no se puedan descifrar.
+- A typo in SEMAPHORE_ACCESS_KEY_ENCRYPTION (or the variable being completely absent) does not crash the container — it silently generates a new key on each startup, making previously encrypted secrets unreadable (SSH keys, Variable Groups). Task Templates/Inventories are not encrypted, so they remain visible even though the secrets can no longer be decrypted.
 
-- Al haber varias partes que tienen que ir en conjunto la configuracion se dificulto un poco
+- Because several parts have to work together, the configuration was a bit difficult.
 
-  - Por otra parte tiene que haber conexion ssh con todas las maquinas que tienen que ser automatizadas
+  - On the other hand, there must be SSH connectivity to all machines that need to be automated.
 
-  - Semaphore no puede crear conexion con nodos externos si la clave SSH tiene un Passphrase, parece ser una limitacion del entorno
-  
-    - Solucion encontrada: Eliminacion de Passphrase para clave ssh
+  - Semaphore cannot create a connection to external nodes if the SSH key has a passphrase, which appears to be a limitation of the environment.
 
-  - Migracion de entornos yaml puede traer dificultades por la encriptacion que Semaphore hace a los datos
-  
-    - Solucion encontrada: Reingresar claves ssh dentro de la GUI de Semaphore para que volviera a cifrarlas
+    - Found solution: remove the passphrase from the SSH key.
 
-  - Terraform dentro del contexto de Semaphore no puede leer archivos configurados dentro del servidor donde esta el docker
-    
-    - Solucion encontrada: Creacion de secretos dentro del entorno de Semaphore y referencia a variable dentro de main.tf 
+  - Migrating YAML environments can cause difficulties due to the encryption Semaphore applies to the data.
 
-  - Terraform necesita la configuracion de quitar privilege separation dentro de Proxmox porque si no no tiene derecho de crear contenedor
+    - Found solution: re-enter the SSH keys in the Semaphore GUI so that it would encrypt them again.
 
-  - Terraform por defecto guarda su state dentro del directorio /tmp/ del contenedor, por lo que no persiste sesiones
+  - Terraform, in the context of Semaphore, cannot read files configured inside the server where Docker is running.
 
-    - Solucion encontrada: Referenciar directorio explicito en main.tf para guardar el state de forma persistente
+    - Found solution: create secrets inside the Semaphore environment and reference the variable inside main.tf.
+
+  - Terraform needs the configuration to remove privilege separation inside Proxmox, because otherwise it does not have the right to create a container.
+
+  - By default, Terraform saves its state inside the /tmp/ directory of the container, so sessions do not persist.
+
+    - Found solution: reference an explicit directory in main.tf to save the state persistently.

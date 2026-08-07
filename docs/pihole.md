@@ -1,23 +1,22 @@
 # Pi-hole
 
-- Configuración de pihole como reemplazo principal de DNS y DHCP del router, dejando al Router como servidor DNS secundario por si ocurriera algun tipo de error
+- Pi-hole configuration as the main DNS and DHCP replacement for the router, leaving the router as a secondary DNS server in case of any type of failure.
 
-- Reserva de direcciones IP mediante DHCP lease, de manera que los nodos principales que necesitan ser alcanzados como servicio tengan IP fija.
+- Reservation of IP addresses through DHCP lease so that the main nodes that need to be reached as services have a fixed IP.
 
+## Decisions
 
-## Decisiones
+- Keep the router as a secondary DNS server in case the container were to fail.
 
-- Mantener router como servidor DNS secundario por si contenedor fuera a tener un error
+- Point all domains to the NPM IP as the DNS server to allow clean resolution of subdomains.
 
-- Apuntar todos los dominios como servidor DNS a la IP de NPM para permitir resolución limpia de subdominios
+- Configure subdomains using the format: application.service.domain.com (for example, vaultwarden.apps.domain.com).
 
-- Configuración de subdominios con el formato: aplicación.servicio.midominio.com (ej. vaultwarden.apps.midominio.com)
-
-- Rango de IP: 192.168.X.101 - 192.168.X.220 con Gateway estandar
+- IP range: 192.168.X.101 - 192.168.X.220 with the standard gateway.
 
 ### Runbook
 
-- Configuración de compose.yaml en ruta /srv/pihole/compose.yaml
+- Configuration of compose.yaml at /srv/pihole/compose.yaml
 
 - ``` bash
   services:
@@ -27,7 +26,7 @@
       network_mode: host
       environment:
         TZ: 'Europe/Zurich'
-        FTLCONF_webserver_api_password: 'contraseña'
+        FTLCONF_webserver_api_password: 'password'
         FTLCONF_dns_listeningMode: 'ALL'
       volumes:
         - './etc-pihole:/etc/pihole'
@@ -36,30 +35,30 @@
       restart: unless-stopped
    ```
 
-## Dificultades encontradas durante el desarrollo
+## Issues encountered
 
-- Problema encontrado
+- Problem found
 
-    - Una serie de servicios no pueden resolver subdominios DNS a menos que el dominio este dentro de la whitelist del servicio
+    - A number of services cannot resolve DNS subdomains unless the domain is inside the service whitelist.
 
-- Solución encontrada:
+  - Solution found:
     
-    - El dominio al que se le estaba agregando tenía que ser agregado manualmente a los trusted domains del servicio
+    - The domain being added had to be added manually to the service's trusted domains.
 
-    - Ejemplos de servicios que necesitan configuración por whitelist: Nextcloud y Homepage
+    - Examples of services that require whitelist configuration: Nextcloud and Homepage.
 
-- Problema encontrado:
+- Problem found:
 
-    - Al ser Pi-hole el propio servidor DHCP, la VM recibía su IP dinámicamente de sí misma — dependencia circular arriesgada ante reinicios
+    - Because Pi-hole itself is the DHCP server, the VM received its IP dynamically from itself — a risky circular dependency on reboot.
 
-- Solución encontrada:
+  - Solution found:
 
-    - Configuración de IP estática a nivel de sistema operativo (Netplan, /etc/netplan/*.yaml), independiente de cualquier DHCP
+    - Configure a static IP at the operating system level (Netplan, /etc/netplan/*.yaml), independent of any DHCP.
 
-- Problema encontrado:
+- Problem found:
 
-    - Con network_mode por defecto (bridge), el servidor DHCP de Pi-hole no funcionaba: el broadcast DHCP no cruza la red bridge de Docker, por lo que los dispositivos nunca recibían respuesta y caían en IP de emergencia (APIPA, 169.254.x.x)
+    - With the default network_mode (bridge), the Pi-hole DHCP server did not work: the DHCP broadcast does not cross the Docker bridge network, so devices never received a response and fell back to emergency IPs (APIPA, 169.254.x.x).
 
-- Solución encontrada:
+  - Solution found:
 
-    - Cambiar a ``` bash network_mode: host ```, permitiendo que el contenedor comparta la red directamente con el host y reciba los broadcasts correctamente
+    - Switch to ``` bash network_mode: host ```, allowing the container to share the network directly with the host and receive broadcasts correctly.

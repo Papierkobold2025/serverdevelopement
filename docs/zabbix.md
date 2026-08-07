@@ -1,41 +1,42 @@
 # Zabbix
 
-- Instalación de monitoreo de nodos, VMs y contenedores de entornos tipo Proxmox
+- Installation of monitoring for nodes, VMs, and containers in Proxmox-style environments.
 
-## Decisiones
+## Decisions
 
-- Reemplazo de Grafana/prometheus por alcance de escaneo de red nativo
+- Replacement of Grafana/Prometheus with native network scan coverage.
 
-- Integración de Zabbix dentro del cluster k3s
+- Integration of Zabbix into the k3s cluster.
 
-- PostgreSQL con persistencia habilitada, instalado como sub-chart dentro del mismo release de Helm
+- PostgreSQL with persistence enabled, installed as a sub-chart within the same Helm release.
 
-## Dificultades encontradas
+## Issues encountered
 
-- Dificultad de configuración de Dashboards e importación de Templates
+- Difficulty configuring dashboards and importing templates.
 
 ## Runbook
 
-- Instalación de Helm y clonación de repositorio oficial de Zabbix
+- Installation of Helm and cloning the official Zabbix repository.
 
 ```bash
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 git clone https://github.com/zabbix-community/helm-zabbix.git
 ```
 
-- Configuración de archivo .yaml de zabbix
+- Configuration of the Zabbix .yaml file.
 
 ```bash
 zabbixServer.service.type: ClusterIP
-postgresql.persistence.enabled: true # En esta versión del chart ya venía en true por defecto; se deja explícito para no depender de ese comportamiento en actualizaciones futuras```
+postgresql.persistence.enabled: true # In this chart version it already came enabled by default; it is left explicit here so it does not depend on that behavior in future updates.
+```
 
-- Instalación de cliente Zabbix
+- Installation of the Zabbix client.
 
 ```bash
 helm install zabbix ./charts/zabbix --dependency-update -f $HOME/zabbix_values.yaml -n monitoring
 ```
 
-- Acceso al frontend: Service `zabbix-zabbix-web`, NodePort puerto 31080 (interno 80)
+- Access to the frontend: Service `zabbix-zabbix-web`, NodePort port 31080 (internal 80).
 
 ```bash
 kubectl get svc zabbix-zabbix-web -n monitoring

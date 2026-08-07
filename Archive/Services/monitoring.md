@@ -1,77 +1,76 @@
-# Monitoreo de nodos de servidor Prometheus + Proxmox Exporter + Grafana
+# Monitoring server nodes with Prometheus + Proxmox Exporter + Grafana
 
-Exporter, Grafana y Prometheus corren dentro de una VM dedicada en un Docker, separada de la integración de Nextcloud para no comprometer la seguridad del nodo.
+The Exporter, Grafana, and Prometheus run inside a dedicated VM in Docker, separated from the Nextcloud integration so as not to compromise the security of the node.
 
-## Preparación para exponer datos a Grafana
+## Preparation to expose data to Grafana
 
-- Configurar Proxmox exporter para exponer todos los datos de los nodos de Proxmox.
+- Configure the Proxmox exporter to expose all data from the Proxmox nodes.
 
-- Configurar Prometheus para juntar todos los datos de manera centralizada.
+- Configure Prometheus to collect all data centrally.
 
-- Configurar Grafana para exponer los datos de manera ordenada en un panel de visualización.
+- Configure Grafana to present the data in an orderly way in a visualization panel.
 
-## Configuración de exporter para Proxmox (`prometheus-pve-exporter`)
+## Proxmox exporter configuration (`prometheus-pve-exporter`)
 
-- Ruta de configuración: `/srv/prometheus-exporter/pve.yml`
+- Configuration path: `/srv/prometheus-exporter/pve.yml`
 
-``` yaml
+```yaml
 default:
     user: prometheus@pve
-    password: <TU_CONTRASEÑA_REAL>
+    password: <YOUR_REAL_PASSWORD>
     verify_ssl: false
 ```
 
-- Ruta de configuración: `/srv/prometheus-exporter/compose.yml`
+- Configuration path: `/srv/prometheus-exporter/compose.yml`
 
-``` bash
+```bash
 services:
   prometheus-pve-exporter:
     container_name: prometheus-pve-exporter
     image: prompve/prometheus-pve-exporter
     restart: always
     ports:
-      - "192.168.1.127:9221:9221"
+      - "192.168.X.X:9221:9221"
     volumes:
       - /srv/prometheus-exporter/pve.yml:/etc/prometheus/pve.yml
 ```
 
-## Configuración de exporter para pihole (`pihole6_exporter`)
+## Pihole exporter configuration (`pihole6_exporter`)
 
-- instalación de exporter:
+- Exporter installation:
 
-``` bash
+```bash
 sudo apt install python3-prometheus-client python3-requests -y
 sudo curl -o /usr/local/bin/pihole6_exporter https://raw.githubusercontent.com/bazmonk/pihole6_exporter/main/pihole6_exporter
 sudo chmod +x /usr/local/bin/pihole6_exporter
 sudo curl -o /etc/systemd/system/pihole6_exporter.service https://raw.githubusercontent.com/bazmonk/pihole6_exporter/main/pihole6_exporter.service
 ```
 
-- Ruta de configuración: `/etc/systemd/system/pihole6_exporter.service`
+- Configuration path: `/etc/systemd/system/pihole6_exporter.service`
 
-``` bash
+```bash
 [Unit]
 Description=Pihole 6 Prometheus Exporter
 After=pihole-FTL.service
 
 [Service]
-ExecStart=/usr/local/bin/pihole6_exporter -H localhost -k constraseña
+ExecStart=/usr/local/bin/pihole6_exporter -H localhost -k password
 Type=exec
 Restart=always
-
 
 [Install]
 WantedBy=default.target
 ```
 
-- Nota: a diferencia de los demás componentes de este documento, pihole6_exporter no corre en Docker — es un script Python instalado como servicio systemd directo en la VM de Pi-hole (192.168.1.138), no en la VM de monitoreo.
+- Note: unlike the other components in this document, pihole6_exporter does not run in Docker — it is a Python script installed as a direct systemd service on the Pi-hole VM (192.168.X.X), not on the monitoring VM.
 
-- **Importante**: el binding de puerto usa la IP interna de la VM (no `127.0.0.1` ni `0.0.0.0`), para que sea accesible desde la LAN pero no desde internet.
+- Important: the port binding uses the VM's internal IP (not `127.0.0.1` or `0.0.0.0`), so that it is accessible from the LAN but not from the internet.
 
-## Configuración de Prometheus
+## Prometheus configuration
 
-- Ruta de configuración: `/etc/prometheus/prometheus.yml`
+- Configuration path: `/etc/prometheus/prometheus.yml`
 
-``` yaml
+```yaml
 global:
   scrape_interval: 15s
 
@@ -79,7 +78,7 @@ scrape_configs:
   - job_name: 'pve'
     static_configs:
       - targets:
-        - 192.168.1.123
+        - 192.168.X.X
     metrics_path: /pve
     params:
       module: [default]
@@ -91,16 +90,16 @@ scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: 192.168.1.127:9221
+        replacement: 192.168.X.X:9221
   - job_name: 'pihole'
     static_configs:
       - targets:
-        - 192.168.1.138:9666
+        - 192.168.X.X:9666
 ```
 
-- Ruta de configuración: `/srv/prometheus/compose.yml`
+- Configuration path: `/srv/prometheus/compose.yml`
 
-``` bash
+```bash
 services:
   prometheus:
     container_name: prometheus
@@ -109,48 +108,48 @@ services:
     command:
       - '--config.file=/srv/prometheus/prometheus.yml'
     ports:
-      - "192.168.1.127:9090:9090"
+      - "192.168.X.X:9090:9090"
     volumes:
       - /srv/prometheus/prometheus.yml:/srv/prometheus/prometheus.yml
       - /srv/prometheus/alert_rules.yml:/srv/prometheus/alert_rules.yml
 ```
 
-## Configuración de Grafana
+## Grafana configuration
 
-- Ruta de configuración: `/srv/grafana/compose.yaml`
+- Configuration path: `/srv/grafana/compose.yaml`
 
-``` yaml
+```yaml
 services:
   grafana:
     container_name: grafana
     image: grafana/grafana:latest
     restart: unless-stopped
     ports:
-      - "192.168.1.127:3000:3000"
+      - "192.168.X.X:3000:3000"
     environment:
       GF_SMTP_ENABLED: 'true'
       GF_SMTP_HOST: 'smtp.gmail.com:587'
-      GF_SMTP_USER: 'tu_correo@gmail.com'
-      GF_SMTP_PASSWORD: 'tu_app_password_de_gmail'
-      GF_SMTP_FROM_ADDRESS: 'tu_correo@gmail.com'
+      GF_SMTP_USER: 'your_email@gmail.com'
+      GF_SMTP_PASSWORD: 'your_app_password_from_gmail'
+      GF_SMTP_FROM_ADDRESS: 'your_email@gmail.com'
     volumes:
       - './data:/var/lib/grafana'
 ```
 
-- Importante: la carpeta ./data debe pertenecer al UID 472 (usuario interno de Grafana): sudo chown -R 472:472 /srv/grafana/data — de lo contrario el contenedor entra en loop de reinicio (Permission denied).
+- Important: the ./data folder must belong to UID 472 (Grafana's internal user): sudo chown -R 472:472 /srv/grafana/data — otherwise the container will enter a restart loop (Permission denied).
 
-- Confirmación de arranque
+- Boot confirmation
 
     - sudo docker ps | grep grafana
 
-- Conexión de base de datos de Prometheus con Grafana por medio de la dirección IP:9090 de Prometheus
+- Connection of the Prometheus database to Grafana through the Prometheus IP:9090 address.
 
-- Importación de template de pantalla de Grafana para Proxmox con la ID: 10347
+- Importation of the Grafana dashboard template for Proxmox with ID: 10347.
 
-- Importación de template de pantalla de Grafana para Pihole con la ID: 21043
+- Importation of the Grafana dashboard template for Pi-hole with ID: 21043.
 
-## Dificultades encontradas
+## Issues encountered
 
-- Al montar un volumen (`-v`) apuntando a un archivo que todavía no existe en el host, Docker crea automáticamente una carpeta vacía en su lugar en vez de fallar — causó `IsADirectoryError` en el exporter hasta corregirlo.
+- When mounting a volume (`-v`) pointing to a file that does not yet exist on the host, Docker automatically creates an empty directory in its place instead of failing — this caused an `IsADirectoryError` in the exporter until it was corrected.
 
-- Los flags de `docker run` no se pueden editar después de crear el contenedor — cualquier cambio (como el binding de puerto) requiere `docker stop` + `docker rm` + volver a crear el contenedor. Si la configuración vive en un archivo externo montado, no se pierde nada en el proceso.
+- Docker `run` flags cannot be edited after creating the container — any change (such as the port binding) requires `docker stop` + `docker rm` + recreating the container. If the configuration lives in an externally mounted file, nothing is lost in the process.

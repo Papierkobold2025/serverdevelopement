@@ -1,15 +1,15 @@
 # Portainer
 
-- Herramienta de gestión visual para clusters de contenedores (Docker/Kubernetes).
+- Visual management tool for container clusters (Docker/Kubernetes).
 
-## Decisiones
+## Decisions
 
-- Autenticación vía Keycloak: cliente dedicado con tokens independientes para Netbird y Portainer (heredado de la instalación anterior, sigue vigente)
+- Authentication through Keycloak: dedicated client with independent tokens for Portainer (inherited from the previous installation and still in use).
 
-## Estado actual
+## Current status
 
-- Gestiona actualmente el cluster de K3s. La instalación anterior (Docker standalone) está documentada en [Archive/Services/portainer.md](../Archive/Services/portainer.md) como referencia histórica.
+- It currently manages the K3s cluster. The previous installation (Docker standalone) is documented in [Archive/Services/portainer.md](../Archive/Services/portainer.md) as a historical reference.
 
 ## Playbook
 
-- [manifiesto/config actual de Portainer sobre K3s]
+- [portainer.yaml](../k3s/manifests/deployment/automation/portainer/portainer.yaml)

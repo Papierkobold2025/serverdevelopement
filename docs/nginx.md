@@ -1,12 +1,12 @@
 # Nginx
 
-- Configuración de Reverse Proxy dentro de la infraestructura para utilizar subdominios dentro del dominio.
+- Reverse proxy configuration inside the infrastructure to use subdomains within the domain.
 
-- Configuración de dominio con certificados SSL.
+- Domain configuration with SSL certificates.
 
 ## Runbook
 
-Configuración de documento /srv/nginx/compose.yml:
+Configuration of the /srv/nginx/compose.yml file:
 
 ```bash
 services:
@@ -24,10 +24,10 @@ services:
 
 ```
 
-- Apertura de puertos a nivel de router, 80 && 443 dirigidos a la IP de nginx y 11000 a Nextcloud
+- Opening ports at the router level: 80 and 443 directed to the Nginx IP, and 11000 to Nextcloud.
 
-## Dificultades encontradas
+## Issues encountered
 
-- Contenedor de Apache no actualizaba puerto por guardado en Cache por parte del Master Container
+- The Apache container was not updating the port because it was cached by the master container.
 
-  - Solución encontrada: desinstalación del contenedor apache y reinstalación con puerto especificado
+  - Found solution: uninstall the Apache container and reinstall it with the specified port.

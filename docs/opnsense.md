@@ -1,55 +1,55 @@
-# Segmentación de red
+# Network segmentation
 
-- Segmentación de red para mantener servicios críticos aislados mediante VLANs
+- Network segmentation to keep critical services isolated through VLANs.
 
-- Aislamiento y reglas en OPNSense aún en progreso
+- Isolation and rules in OPNsense are still in progress.
 
-## Terminología (importante)
+## Terminology (important)
 
-- **VLAN**: separación lógica en Capa 2 (dominio de broadcast). Una VLAN permite segregar tráfico en el switch y controlar dominios de difusión.
-- **Subred**: segmentación en Capa 3 (rango de direcciones IP). Una subred puede asignarse a una VLAN, pero no son lo mismo.
-- En este proyecto uso VLANs para aislar servicios a nivel de capa 2 y asigno subredes IP por VLAN. Las políticas de OPNSense (ruteo/Firewall) operan a nivel L3 y pueden aplicar NAT o reglas entre subredes/VLANs según sea necesario.
+- **VLAN**: logical separation at Layer 2 (broadcast domain). A VLAN allows traffic to be segmented on the switch and broadcast domains to be controlled.
+- **Subnet**: segmentation at Layer 3 (range of IP addresses). A subnet can be assigned to a VLAN, but they are not the same.
+- In this project, I use VLANs to isolate services at Layer 2 and assign IP subnets per VLAN. OPNsense policies (routing/firewall) operate at Layer 3 and can apply NAT or rules between subnets/VLANs as needed.
 
-## Estado actual
+## Current status
 
-- Creación de VLAN para poder aislar servicios críticos y evitar movimientos laterales a nivel de red en caso de compromiso
+- Creation of VLANs to isolate critical services and avoid lateral movement at the network level in case of compromise.
 
-- Servicios seleccionados para migración son servicios de infraestructura y no servicios de usuario final
+- The selected services for migration are infrastructure services, not end-user services.
 
-- Migración de servicios a VLAN: 
+- Migration of services to the VLAN:
   - Vaultwarden
   - Keycloak
-  - Kubernetes
+  - K3s
   - Nginx
   - Nextcloud
 
-- Pi-hole no fue migrado debido a que actúa como servidor DHCP para la red plana y debe mantener alcance sobre todos los clientes
+- Pi-hole was not migrated because it acts as the DHCP server for the flat network and must keep scope over all clients.
 
-- Netbird no fue migrado porque el orquestador para acceso fuera de la red local es más accesible desde la red plana
+- Netbird was not migrated because the orchestrator for access outside the local network is more accessible from the flat network.
 
-- OPNSense naturalmente tampoco fue migrado debido a que es el punto de comunicación entre VLAN y red plana
+- OPNsense was also not migrated because it is the communication point between the VLAN and the flat network.
 
-## Próximos pasos
+## Next steps
 
-- Creación de reglas restrictivas a nivel de OPNSense de deny-by-default para evitar tráfico libre entre servicios críticos, VLAN y red plana
+- Creation of restrictive rules at the OPNsense level using a deny-by-default approach to prevent free traffic between critical services, VLANs, and the flat network.
 
-- Creación de un servidor DHCP mínimo para permitir conexión con dispositivos desde red plana para debug
+- Creation of a minimal DHCP server to allow connection from devices on the flat network for debugging.
 
-## Decisiones
+## Decisions
 
-- Segmentación de red solamente con una VLAN, para aislar servicios críticos sin segmentar a nivel de servicios
+- Network segmentation only with a single VLAN, to isolate critical services without segmenting by service.
 
-- Decidí colocar el reverse proxy dentro de la VLAN; las consultas DNS internas pasan por Pi-hole y se reenvían a NPM, mientras OPNSense actúa como puente para devolver la resolución al cliente
+- I decided to place the reverse proxy inside the VLAN; internal DNS queries pass through Pi-hole and are forwarded to NPM, while OPNsense acts as the bridge to return the resolution to the client.
 
-- Servicios internos que no tienen acceso a red externa se metieron a la VLAN, dejando solamente los servicios de usuario final en la red plana para evitar movimientos laterales
+- Internal services that do not have access to the external network were placed in the VLAN, leaving only end-user services in the flat network to avoid lateral movement.
 
-- Aceptación de riesgo inicial al no tener ninguna regla explícita de flujo de red, manejando un enfoque de ir haciéndolo más prohibitivo en vez de cerrar todo de principio e ir abriendo después
+- Initial risk acceptance due to the absence of any explicit network-flow rules, taking an approach of making it more restrictive over time instead of closing everything at the outset and then opening it up later.
 
-- Decidí usar los registros DNS locales en Pi-hole por encima de reenvíos condicionales, ya que mantengo esa lista siempre actualizada. Al crear la VLAN, bastó con apuntar los registros existentes a la nueva IP de NPM para que la resolución de dominios siguiera funcionando sin necesidad de configurar reenvío condicional.
+- I decided to use the local DNS records in Pi-hole rather than conditional forwarding, since I keep that list updated. When the VLAN was created, it was enough to point the existing records to the new NPM IP so domain resolution continued to work without needing to configure conditional forwarding.
 
-### Dificultades encontradas
+### Issues encountered
 
-- VLAN aún con tráfico abierto sin reglas estrictas de Firewall; actualmente uso NAT/PUENTE en OPNSense para permitir comunicación controlada con la red plana cuando es necesario
+- The VLAN still has open traffic without strict firewall rules; I currently use NAT/bridge mode in OPNsense to allow controlled communication with the flat network when necessary.
 
 
 

@@ -1,16 +1,16 @@
 # Keycloak Integration
 
-- Integración de Keycloak para poder iniciar sesión por SSO a servicios seleccionados
+- Keycloak integration to enable SSO sign-in for selected services.
 
-## Decisiones
+## Decisions
 
-- Descartar Keycloak para Vaultwarden para evitar sobrelapamiento de dos servicios críticos para la infraestructura
+- Keycloak was not used for Vaultwarden to avoid overlap between two critical services for the infrastructure.
 
-- Creación de Realm Homelab para separar panel de administración de usuarios normales
+- A Homelab realm was created to separate the administration panel from normal users.
 
-### Dificultades encontradas
+### Issues encountered
 
-- Creación de usuario con configuración public no funcionaba, ya que para conectar servicios tenía que poder generar Token de aplicación
+- Creating a user with public configuration did not work, because to connect services it had to be able to generate an application token.
 
 ### Runbook
 

@@ -1,20 +1,20 @@
 # Nextcloud integration
 
-- Integración de Nextcloud dentro de una VM en el cluster de nodos.
+- Integration of Nextcloud inside a VM in the node cluster.
 
-- Configuración y construcción de entorno de almacenaje de archivos personal.
+- Configuration and setup of a personal file storage environment.
 
-## Decisiones
+## Decisions
 
-- Aislamiento de Nextcloud de los demás servicios, en su propio nodo dedicado (con replicación a Nextcloud-sec para HA, ver siguiente punto)
+- Isolation of Nextcloud from other services, on its own dedicated node (with replication to Nextcloud-sec for HA, see next point).
 
-- Configuración forzada de 2FA como medida de seguridad adicional al login
+- Forced configuration of 2FA as an additional security measure for login.
 
-- Configuración de replicación de VM al nodo Nextcloud-sec y configuración de HA para evitar fallo de servicios o Downtime largos
+- Configuration of VM replication to the Nextcloud-sec node and HA setup to prevent service failure or long downtime.
 
 ## Runbook
 
-- Instalación de Docker Container nextcloud_aio_nextcloud
+- Installation of the nextcloud_aio_nextcloud Docker container.
 
 ```bash
 services:
@@ -36,25 +36,25 @@ volumes:
     external: true
 ```
 
-- Configuración de SMTP
+- SMTP configuration
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| Protocolo | SMTP |
-| Codificación | Ninguna / STARTTLS |
+| Protocol | SMTP |
+| Encoding | None / STARTTLS |
 | Host | smtp.gmail.com |
-| Puerto | 587 |
-| Autenticación | Sí - Application Password de Gmail |
+| Port | 587 |
+| Authentication | Yes - Gmail Application Password |
 
-## Dificultades encontradas durante el desarrollo
+## Issues encountered
 
-- Bug en panel de administración de Nextcloud
+- Bug in the Nextcloud administration panel
 
-  - Definir antigüedad de contraseñas usables no es mandado de Frontend a Backend
+  - Defining the age of usable passwords is not passed from Frontend to Backend.
 
-  - Definir máxima cantidad de contraseñas erróneas no es mandado de Frontend a Backend
+  - Defining the maximum number of failed passwords is not passed from Frontend to Backend.
 
-- Workaround encontrado:
+- Workaround found:
 
 ```bash
   sudo docker exec -u www-data nextcloud-aio-nextcloud php occ config:app:set password_policy maximumLoginAttempts --value=3

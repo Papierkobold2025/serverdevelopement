@@ -1,11 +1,11 @@
 # Homarr
 
-- Aplicación que lleva como función ser la Homepage de la infraestructura.
+- Application whose function is to serve as the infrastructure homepage.
 
-## Decisiones
+## Decisions
 
-- Reemplazo de Homepage por homarr por mejor integración y más posibilidades
+- Replaced Homepage with Homarr for better integration and more possibilities.
 
 ## Playbook
 
-- Arhivo de configuracion en [homarr](../k3s/manifests/deployment/monitoring/homarr.yaml)
+- Configuration file at [homarr](../k3s/manifests/deployment/monitoring/homarr.yaml)
