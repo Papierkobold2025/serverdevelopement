@@ -4,17 +4,17 @@
 
 ## Decisiones
 
-- Acceso solo interno
+- Acceso solo interno para evitar comprometer todas las contraseñas para entrar a servicios
 
-- HA replicado a nextcloud-sec
+- HA replicado a nextcloud-sec por la criticalidad de tener acceso a contraseñas
 
-- Watchtower instalado
+- Watchtower instalado para asegurar que el contenedor docker siempre estuviera en la version mas actual para evitar versiones deprecadas
 
-### Dificultades encontradas
+## Dificultades encontradas
 
 - Creación de usuario vía "Invite User" del panel admin falla (bug conocido con organizationId en el link) — hay que crear el usuario entrando directo a la URL raíz
 
-#### Runbook
+## Runbook
 
 ``` bash 
 services:

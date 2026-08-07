@@ -2,7 +2,7 @@
 
 - Configuración de pihole como reemplazo principal de DNS y DHCP del router, dejando al Router como servidor DNS secundario por si ocurriera algun tipo de error
 
-- Reserva de direcciones IP mediante DHCP lease, de maner que los nodos principales que necesitan ser alcanzados como servicio tengan IP fija.
+- Reserva de direcciones IP mediante DHCP lease, de manera que los nodos principales que necesitan ser alcanzados como servicio tengan IP fija.
 
 
 ## Decisiones
@@ -11,7 +11,7 @@
 
 - Apuntar todos los dominios como servidor DNS a la IP de NPM para permitir resolución limpia de subdominios
 
-- Configuración de subdominios con el formato: aplicación.servicio.midominio.com
+- Configuración de subdominios con el formato: aplicación.servicio.midominio.com (ej. vaultwarden.apps.midominio.com)
 
 - Rango de IP: 192.168.X.101 - 192.168.X.220 con Gateway estandar
 
@@ -36,9 +36,11 @@
       restart: unless-stopped
    ```
 
-# Dificultades encontradas durante el desarrollo
+## Dificultades encontradas durante el desarrollo
 
-- Una serie de servicios no pueden resolver subdominios DNS a menos que el dominio este dentro de la whitelist del servicio
+- Problema encontrado
+
+    - Una serie de servicios no pueden resolver subdominios DNS a menos que el dominio este dentro de la whitelist del servicio
 
 - Solución encontrada:
     

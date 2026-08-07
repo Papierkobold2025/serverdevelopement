@@ -1,12 +1,18 @@
 # Serverdevelopment
 
-Desarrollo de infraestructura con base de **Proxmox**, priorizando seguridad y resiliencia.
+Infraestructura personal (homelab) documentada — portafolio técnico basado en Proxmox. Este repositorio demuestra habilidades en administración de sistemas, segmentación de red, automatización (Semaphore / Ansible / Terraform) y despliegue de servicios (K3s, Keycloak, Nextcloud). Está pensado para mostrar decisiones de diseño, runbooks y ejemplos de IaC.
 
-El propósito del proyecto es crear un **portafolio de sysadmin**, instalando y administrando servicios de uso personal.
+---
 
-## Arquitectura general
+## Visión rápida
 
-Infraestructura pensada en **aislamiento de servicios** para evitar movimientos laterales entre máquinas, además de aislar servicios críticos para evitar vulneración de múltiples servicios simultáneamente.
+- Stack: Proxmox · K3s · OPNSense · Nginx Proxy Manager · Pi-hole · Keycloak · Vaultwarden · NetBird
+- IaC / Automatización: Terraform · Ansible · Semaphore · Portainer
+- Observabilidad: Homarr · Zabbix
+
+## Arquitectura general (resumen)
+
+Infraestructura pensada en **aislamiento de servicios** para reducir la superficie de ataque y limitar movimientos laterales. La topología incluye un plano de red plana y una VLAN que aloja servicios de infraestructura, con OPNSense como puente/firewall entre planos.
 
 ### Nodos del clúster
 
@@ -19,7 +25,7 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 | **i5** | Hipervisor de replicación y servicios no críticos |
 | **PBS** | Backups diarios de todos los nodos y sus VMs/contenedores |
 
-📄 Especificaciones de hardware completas en [Nodes](cluster/nodes.md)
+📄 Especificaciones de hardware completas en [cluster/nodes.md](cluster/nodes.md)
 
 ## Servicios
 
@@ -31,43 +37,54 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 | Vaultwarden | VM | [Vaultwarden](docs/vaultwarden.md) |
 | Keycloak | LXC | [Keycloak](docs/keycloak.md) |
 | NetBird | LXC | [Netbird](docs/netbird.md) |
-| Portainer | LXC | [Portainer](docs/portainer.md) |
-| Kubernetes | VM | [K3s](docs/k3s.md) |
-| Backups (PBS) | VM dedicada | [Backup](cluster/backup.md) |
-
-## Temaactual
-
-> 🚧 **En progreso** — Segmentación de red con OPNSense para separar cluster de red plana.
+| K3s (clúster ligero) | VM | [K3s](docs/k3s.md) - aloja Portainer, Semaphore, Zabbix y Homarr |
+| Backups (PBS) | VM dedicada | [cluster/backup.md](cluster/backup.md) |
 
 ## Automatización e Infraestructura como Código
 
-- **Semaphore** — automatización de deployment de nuevos contenedores/VMs
-- **Ansible** — playbooks para actualizaciones periódicas de sistema operativo e instalación de software
-- **Terraform** — deployment de nuevas VMs de forma normalizada
+| Herramienta | Propósito | Documentación |
+|---|---|---|
+| Semaphore | Pipelines de despliegue | [Semaphore](docs/semaphore.md) |
+| Ansible | Playbooks para configuración y parches | [Ansible](docs/semaphore.md#ansible) |
+| Terraform | Despliegue repetible de VMs | [Terraform](docs/semaphore.md#terraform) |
+| Portainer | Despliegue y configuración de contenedores y cluster de Kubernetes | [Portainer](docs/portainer.md) |
+
+## Políticas de red
+
+| Herramienta | Propósito | Documentación |
+|---|---|---|
+| OPNSense | Firewall/Router de VLAN y red plana | [OPNSense](docs/opnsense.md) |
+| K3s | Firewall dentro del Cluster de K3s | [K3s](docs/k3s.md#network-policies) |
 
 ## Roadmap / Pendientes
 
+- [ ] Configuración de alertas con Zabbix a endpoint de Telegram
+- [ ] Configuración de firewall en K3s
+- [ ] Configuración de firewall en Proxmox
+- [ ] Ampliación de tareas de automatización en Semaphore, Terraform y cronjobs en Linux
 - [ ] Cloudflare Access como capa extra para servicios expuestos (Keycloak)
 - [ ] ntopng — visibilidad de tráfico de red
 - [ ] Wazuh — SIEM, centralización de logs de seguridad
 - [ ] HA / replicación multi-nodo de k3s
 
-## Índice de documentación
+## Estado actual / En progreso
 
-- [Automatización (Semaphore/Ansible/Terraform)](docs/automation.md)
-- [Docker](docs/docker.md)
-- [Homepage](docs/homepage.md)
-- [K3s / Kubernetes](docs/k3s.md)
-- [Keycloak](docs/keycloak.md)
-- [Monitoreo (Prometheus/Grafana)](docs/monitoring.md)
-- [NetBird](docs/netbird.md)
-- [Nextcloud](docs/nextcloud.md)
-- [Nginx Proxy Manager](docs/nginx.md)
-- [Pi-hole](docs/pihole.md)
-- [Portainer](docs/portainer.md)
-- [Vaultwarden](docs/vaultwarden.md)
-- [Watchtower](docs/watchtower.md)
-- [Backups (PBS)](cluster/backup.md)
-- [Zabbix](docs/zabbix.md)
-- [Homarr](docs/homarr.md)
-- [Nodos del clúster](cluster/nodes.md)
+> 🚧 **Segmentación de red en progreso.** Se ha creado una subred crítica y se está migrando parte de la infraestructura; las reglas en OPNSense y las validaciones DNS están en desarrollo. Detalles y runbooks en [Segmentación de red](docs/opnsense.md).
+
+## Índice de documentación archivada
+
+- Documentación histórica / archivada (referencia) — carpeta `Archive/Services/`:
+    - [Automatización (migrado)](Archive/Services/automation.md)
+    - [Homepage (histórico)](Archive/Services/homepage.md)
+    - [Monitoreo (histórico)](Archive/Services/monitoring.md)
+    - [Watchtower (histórico)](Archive/Services/watchtower.md)
+    - [Portainer (migrado)](Archive/Services/portainer.md)
+
+## Índice de referencias rápidas
+
+- Documentación de apoyo de desarrollo
+    - [Docker](references/docker.md) — instalación base
+
+---
+
+Última actualización: 2026-08-07

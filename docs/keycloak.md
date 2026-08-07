@@ -1,18 +1,18 @@
 # Keycloak Integration
 
-- Integración de Keycloke para poder inciar sesión por SSO a servicios seleccionados
+- Integración de Keycloak para poder iniciar sesión por SSO a servicios seleccionados
 
 ## Decisiones
 
-- Descartar Keycloke para Vaultwarden para evitar sobrelapamiento de dos servicios críticos para la infraestructura
+- Descartar Keycloak para Vaultwarden para evitar sobrelapamiento de dos servicios críticos para la infraestructura
 
 - Creación de Realm Homelab para separar panel de administración de usuarios normales
 
 ### Dificultades encontradas
 
-- Creación de usuario con configuración public no funcionaba, ya que para conectar servicios tenía que poder generar Tocken de aplicación
+- Creación de usuario con configuración public no funcionaba, ya que para conectar servicios tenía que poder generar Token de aplicación
 
-#### Runbook
+### Runbook
 
 ```bash
 services:
@@ -28,7 +28,7 @@ services:
       KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
       KC_DB_USERNAME: '${KC_DB_USER}'
       KC_DB_PASSWORD: '${KC_DB_PASSWORD}'
-      KC_HOSTNAME: keycloak.apps.moralesdario.com
+      KC_HOSTNAME: keycloak.apps.midominio.com
       KC_HOSTNAME_STRICT: "false"
       KC_PROXY_HEADERS: xforwarded
       KC_HTTP_ENABLED: "true"

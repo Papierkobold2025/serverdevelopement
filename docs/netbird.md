@@ -4,9 +4,7 @@
 
 ## Decisiones
 
-- Reemplazo de Wireguard por exposición hacia Grafana y por facilidad de adminictración con panel dedicado
-
-- Reemplazar el puerto de Next Talk 3478 por Netbird por configuración estandar de paquete de instalación
+- Reemplazar el puerto de Nextcloud Talk 3478 por Netbird por configuración estandar de paquete de instalación
 
 - Reemplazar el puerto 8081 para conexiones por el puerto 80 por ser el puerto donde el host del docker escucha
 
@@ -24,7 +22,7 @@
 
     - Solución ping a peer en LAN activó inmediatamente la conexión
 
-#### Runbook
+### Runbook
 
 - Script de instalación de Netbird
 
@@ -128,7 +126,7 @@ location ~ ^/(relay|ws-proxy/) {
 }
 
 location ~ ^/(signalexchange\.SignalExchange|management\.ManagementService)/ {
-    grpc_pass grpc://192.168.1.135:80;
+    grpc_pass grpc://192.168.X.X:80;
     grpc_read_timeout 1d;
     grpc_send_timeout 1d;
     grpc_socket_keepalive on;

@@ -10,11 +10,11 @@
 
 - PostgreSQL con persistencia habilitada, instalado como sub-chart dentro del mismo release de Helm
 
-### Dificultades encontradas
+## Dificultades encontradas
 
 - Dificultad de configuración de Dashboards e importación de Templates
 
-# Runbook
+## Runbook
 
 - Instalación de Helm y clonación de repositorio oficial de Zabbix
 
@@ -27,8 +27,7 @@ git clone https://github.com/zabbix-community/helm-zabbix.git
 
 ```bash
 zabbixServer.service.type: ClusterIP
-postgresql.persistence.enabled: true # Valor true viene configurado por defecto
-```
+postgresql.persistence.enabled: true # En esta versión del chart ya venía en true por defecto; se deja explícito para no depender de ese comportamiento en actualizaciones futuras```
 
 - Instalación de cliente Zabbix
 

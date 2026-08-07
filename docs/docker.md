@@ -20,4 +20,6 @@ echo \
 
 sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo usermod -aG docker $USER ##Consideración importante: ya no requiere sudo para correr docker, pero equivale a acceso root en el host (desde un contenedor se puede montar y manipular el filesystem completo)
+newgrp docker ##Para aplicar cambios
 ```
