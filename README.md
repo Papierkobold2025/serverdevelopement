@@ -16,7 +16,7 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 | **API-Panel** | Hipervisor dedicado a APIs, dashboards y visualizaciones de estado del clúster/servicios |
 | **Nextcloud** | Hipervisor de almacenamiento personal (Nextcloud) |
 | **Nextcloud-sec** | Hipervisor de High Availability y replicación |
-| **K3s** | Hipervisor de Kubernetes, en proceso de concentrar servicios |
+| **i5** | Hipervisor de replicación y servicios no críticos |
 | **PBS** | Backups diarios de todos los nodos y sus VMs/contenedores |
 
 📄 Especificaciones de hardware completas en [Nodes](cluster/nodes.md)
@@ -32,15 +32,12 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 | Keycloak | LXC | [Keycloak](docs/keycloak.md) |
 | NetBird | LXC | [Netbird](docs/netbird.md) |
 | Portainer | LXC | [Portainer](docs/portainer.md) |
-| Zabbix, Homepage, Prometheus, Grafana, Semaphore | **k3s** | [K3s](docs/k3s.md) |
+| Kubernetes | VM | [K3s](docs/k3s.md) |
 | Backups (PBS) | VM dedicada | [Backup](cluster/backup.md) |
 
-## Kubernetes (k3s)
+## Temaactual
 
-> 🚧 **En progreso** — adición más nueva al clúster de Proxmox, para empezar a administrar todo dentro de Kubernetes.
-
-- En proceso de migración de servicios a Kubernetes
-- Proceso de segmentación de red interna (Network Policies) para aislamiento de servicios críticos
+> 🚧 **En progreso** — Segmentación de red con OPNSense para separar cluster de red plana.
 
 ## Automatización e Infraestructura como Código
 
@@ -50,13 +47,7 @@ Infraestructura pensada en **aislamiento de servicios** para evitar movimientos 
 
 ## Roadmap / Pendientes
 
-- [ ] Network Policies en K3s
-- [ ] Distribución de almacenamiento vía Ceph
-- [ ] Migración del resto de servicios a K3s
-- [ ] Helm (gestor de paquetes para Kubernetes)
-- [ ] Evaluación de Keel / GitOps (Renovate + Flux/ArgoCD) para auto-actualización de imágenes
 - [ ] Cloudflare Access como capa extra para servicios expuestos (Keycloak)
-- [ ] Segmentación de red física (VLANs) / OPNsense
 - [ ] ntopng — visibilidad de tráfico de red
 - [ ] Wazuh — SIEM, centralización de logs de seguridad
 - [ ] HA / replicación multi-nodo de k3s
