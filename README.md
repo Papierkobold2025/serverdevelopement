@@ -83,7 +83,7 @@ Infraestructura pensada en **aislamiento de servicios** para reducir la superfic
 ## Índice de referencias rápidas
 
 - Documentación de apoyo de desarrollo
-    - [Docker](references/docker.md) — instalación base
+    - [Docker](ops/docker.md) — instalación base
 
 ---
 
