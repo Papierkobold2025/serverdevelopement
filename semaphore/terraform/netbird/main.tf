@@ -15,8 +15,8 @@ resource "proxmox_virtual_environment_container" "ubuntu_container" {
 
     ip_config {
       ipv4 {
-        address = "192.168.1.135/24"
-        gateway = "192.168.1.1"
+        address = "192.168.X.X/24"
+        gateway = "192.168.X.X"
       }
     }
 
@@ -107,7 +107,7 @@ variable "proxmox_api_token" {
 }
 
 provider "proxmox" {
-  endpoint  = "https://192.168.1.147:8006/"
+  endpoint  = "https://192.168.X.X:8006/"
   api_token = var.proxmox_api_token
   insecure  = true
 

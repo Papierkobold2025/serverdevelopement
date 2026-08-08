@@ -10,7 +10,7 @@ Hardware specs for each physical node, without IP addresses (internal documentat
 - **Manager**: pve-manager/9.2.2
 - **Boot Mode**: EFI
 
-## nextcloud
+## nextcloud-sec
 - **CPU(s)**: 4 x Intel Core i7-7567U @ 3.50GHz (1 Socket)
 - **Total RAM**: 62.68 GiB
 - **Total storage**: 1.26 TiB
@@ -47,7 +47,7 @@ Hardware specs for each physical node, without IP addresses (internal documentat
 | Node | CPU | Cores/Threads | Total RAM | Total storage |
 |---|---|---|---|---|
 | nextcloud-prim | i7-7567U | 4 | 62.69 GiB | 1.69 TiB |
-| nextcloud | i7-7567U | 4 | 62.68 GiB | 1.26 TiB |
+| nextcloud-sec | i7-7567U | 4 | 62.68 GiB | 1.26 TiB |
 | api-panel | i7-7567U | 4 | 62.68 GiB | 1.28 TiB |
 | panel | i7-13620H | 16 | 62.44 GiB | 1.71 TiB |
 | i5 | i5-7260U | 4 | 46.94 GiB | 1.37 TiB |

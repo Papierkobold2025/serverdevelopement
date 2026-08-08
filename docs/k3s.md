@@ -48,10 +48,10 @@ curl -sfL https://get.k3s.io | sh -
 
 | Service | Manifest / Installation |
 |---|---|
-| Portainer | [portainer.yaml](../k3s/manifests/deployment/automation/portainer/portainer.yaml) |
-| Semaphore | [semaphore.yaml](../k3s/manifests/deployment/automation/semaphore/semaphore.yaml) |
+| Portainer | [portainer.yaml](../k3s/manifests/deployment/automation/portainer.yaml) |
+| Semaphore | [semaphore.yaml](../k3s/manifests/deployment/automation/semaphore.yaml) |
 | Zabbix | [docs/zabbix.md](../docs/zabbix.md) (Helm chart) |
-| Homarr | [homarr.yaml](../k3s/manifests/deployment/monitoring/homarr/homarr.yaml) |
+| Homarr | [homarr.yaml](../k3s/manifests/deployment/monitoring/homarr.yaml) |
 
 ### Network Policy Rules
 
